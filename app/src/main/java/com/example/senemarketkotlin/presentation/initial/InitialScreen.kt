@@ -41,7 +41,7 @@ fun InitialScreen( navigateToLogin:() -> Unit = {}, navigateToSignUp:() -> Unit 
     {
         Spacer(modifier = Modifier.weight(0.7f))
         Image(painter = painterResource(id = R.drawable.senemarket), contentDescription = null)
-        Text("SeneMarket", fontSize = 38.sp, fontWeight = FontWeight.Bold)
+        Text("SeneMarket.", fontSize = 38.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(

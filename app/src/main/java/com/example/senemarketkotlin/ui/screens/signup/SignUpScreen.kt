@@ -1,4 +1,4 @@
-package com.example.senemarketkotlin.presentation.signup
+package com.example.senemarketkotlin.ui.screens.signup
 
 import androidx.compose.runtime.Composable
 import com.google.firebase.auth.FirebaseAuth

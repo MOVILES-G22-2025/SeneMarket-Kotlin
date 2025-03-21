@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.senemarketkotlin.presentation.initial.InitialScreen
-import com.example.senemarketkotlin.presentation.login.LoginScreen
-import com.example.senemarketkotlin.presentation.signup.SignUpScreen
+import com.example.senemarketkotlin.ui.screens.initial.InitialScreen
+import com.example.senemarketkotlin.ui.screens.login.LoginScreen
+import com.example.senemarketkotlin.ui.screens.signup.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable

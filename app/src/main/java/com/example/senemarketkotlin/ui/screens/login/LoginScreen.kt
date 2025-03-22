@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.senemarketkotlin.presentation.login
+package com.example.senemarketkotlin.ui.screens.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,11 +19,12 @@ import androidx.compose.ui.unit.sp
 import com.example.senemarketkotlin.ui.theme.White
 import com.google.firebase.auth.FirebaseAuth
 import com.example.senemarketkotlin.R
+import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
 
 
 @Composable
 
-fun LoginScreen(auth: FirebaseAuth) {
+fun LoginScreen(viewModel: LoginScreenViewModel) {
 
 
     Column(modifier = Modifier.fillMaxSize(). background(White)) {

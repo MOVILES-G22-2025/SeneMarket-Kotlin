@@ -14,6 +14,21 @@ class LoginScreenViewModel (
 
     }
 
+    fun goToLogin(){
+        this.navController.navigate("login")
+
+
+    }
+
+    fun goToHome(){
+        this.navController.navigate("home")
+    }
+
+    fun goToInitial(){
+        this.navController.navigate("initial")
+    }
+
+
     fun login(email:String, password:String){
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
             if (it.user != null)

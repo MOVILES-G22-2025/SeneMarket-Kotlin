@@ -10,6 +10,7 @@ import com.example.senemarketkotlin.ui.screens.login.LoginScreen
 import com.example.senemarketkotlin.ui.screens.signup.SignUpScreen
 import com.example.senemarketkotlin.viewmodels.InitialScreenViewModel
 import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
+import com.example.senemarketkotlin.viewmodels.SignUpScreenViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -26,7 +27,7 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth){
             LoginScreen(viewModel = LoginScreenViewModel(navHostController, auth))
         }
         composable("signup"){
-            SignUpScreen(auth)
+            SignUpScreen(viewModel = SignUpScreenViewModel(navHostController, auth))
         }
         composable("home") {
             HomeScreen()

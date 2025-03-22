@@ -40,7 +40,8 @@ fun InitialScreen(viewModel: InitialScreenViewModel) {
     {
         Spacer(modifier = Modifier.weight(0.7f))
         Image(painter = painterResource(id = R.drawable.senemarket), contentDescription = null)
-        Text("SeneMarket.", fontSize = 38.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.weight(0.1f))
+        Text("SeneMarket", fontSize = 38.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
@@ -59,7 +60,7 @@ fun InitialScreen(viewModel: InitialScreenViewModel) {
         }
 
         Row {
-            Text(text = "Already have an account?", color = Color.Black)
+            Text(text = "New to SeneMarket?", color = Color.Black)
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Create account",
@@ -68,6 +69,7 @@ fun InitialScreen(viewModel: InitialScreenViewModel) {
                 modifier = Modifier.clickable { viewModel.goToSignUp() }
             )
         }
+        Spacer(modifier = Modifier.weight(0.7f))
     }
 }
 

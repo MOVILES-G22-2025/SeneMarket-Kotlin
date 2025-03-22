@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,10 +27,10 @@ import com.example.senemarketkotlin.R
 
 import com.example.senemarketkotlin.ui.theme.White
 import com.example.senemarketkotlin.ui.theme.Yellow30
+import com.example.senemarketkotlin.viewmodels.InitialScreenViewModel
 
-@Preview
 @Composable
-fun InitialScreen( navigateToLogin:() -> Unit = {}, navigateToSignUp:() -> Unit = {}) {
+fun InitialScreen(viewModel: InitialScreenViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,15 +51,23 @@ fun InitialScreen( navigateToLogin:() -> Unit = {}, navigateToSignUp:() -> Unit 
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = {navigateToSignUp()}, modifier = Modifier
+            onClick = {viewModel.goToLogin()}, modifier = Modifier
                 //.fillMaxWidth()
                 .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
         ) {
             Text(text = "Sign in", color = White)
         }
 
-        Text("New to SeneMarket? Create account", modifier = Modifier.clickable { navigateToLogin() })
-        Spacer(modifier = Modifier.weight(0.7f))
+        Row {
+            Text(text = "Already have an account?", color = Color.Black)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "Create account",
+                color = Color(0xFFF4C400), // Color amarillo similar
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { viewModel.goToSignUp() }
+            )
+        }
     }
 }
 

@@ -35,6 +35,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,6 +47,10 @@ import com.example.senemarketkotlin.ui.theme.Yellow30
 @Composable
 
 fun LoginScreen(viewModel: LoginScreenViewModel) {
+    val email: String by viewModel.email.observeAsState(initial = "")
+    val password: String by viewModel.password.observeAsState(initial = "")
+    val error: String by viewModel.error.observeAsState(initial = "")
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,8 +86,8 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
 
             // Campos de texto
             OutlinedTextField(
-                value = "",
-                onValueChange = { /* Actualizar valor */ },
+                value = email,
+                onValueChange = { viewModel.onLoginEmailChange(it) },
                 label = { Text("Uniandes email") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp)
@@ -90,8 +96,8 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = { /* Actualizar valor */ },
+                value = password,
+                onValueChange = { viewModel.onLoginPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
@@ -111,9 +117,11 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+            if (error.isNotEmpty())
+                Text("Error: $error")
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = {viewModel.goToHome()}, modifier = Modifier
+                onClick = {viewModel.login()}, modifier = Modifier
                     //.fillMaxWidth()
                     .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
             ) {

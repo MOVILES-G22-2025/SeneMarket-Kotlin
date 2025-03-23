@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,16 +65,18 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             .fillMaxWidth()
             .padding(vertical = 4.dp)
 
-        var fullName by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var career by remember { mutableStateOf("") }
-        var semester by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var confirmPassword by remember { mutableStateOf("") }
+        val email: String by viewModel.email.observeAsState(initial = "")
+        val password: String by viewModel.password.observeAsState(initial = "")
+        val confirmPassword: String by viewModel.confirmPassword.observeAsState(initial = "")
+        val fullName: String by viewModel.fullName.observeAsState(initial = "")
+        val career: String by viewModel.career.observeAsState(initial = "")
+        val semester: String by viewModel.semester.observeAsState(initial = "")
+        val error: String by viewModel.error.observeAsState(initial = "")
+
 
         OutlinedTextField(
             value = fullName,
-            onValueChange = { fullName = it },
+            onValueChange = {viewModel.onSignUpFullNameChange(it)},
             label = { Text("Full name") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp)
@@ -81,7 +84,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { viewModel.onSignUpEmailChange(it)},
             label = { Text("Uniandes email") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp)
@@ -89,7 +92,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
 
         OutlinedTextField(
             value = career,
-            onValueChange = { career = it },
+            onValueChange = { viewModel.onSignUpCareerChange(it) },
             label = { Text("Career") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp)
@@ -97,7 +100,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
 
         OutlinedTextField(
             value = semester,
-            onValueChange = { semester = it },
+            onValueChange = { viewModel.onSignUpSemesterChange(it)},
             label = { Text("Semester") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp)
@@ -105,7 +108,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { viewModel.onSignUpPasswordChange(it)},
             label = { Text("Password") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
@@ -114,7 +117,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
 
         OutlinedTextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = { viewModel.onSignUpConfirmPasswordChange(it) },
             label = { Text("Confirm password") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
@@ -122,6 +125,9 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        if (error.isNotEmpty())
+            Text("Error: $error")
 
         // Register button
         Button(

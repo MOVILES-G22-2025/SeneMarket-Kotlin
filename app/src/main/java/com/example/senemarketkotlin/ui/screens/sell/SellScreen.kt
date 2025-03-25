@@ -14,10 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,7 +67,6 @@ fun SellScreen () {
         Spacer(modifier = Modifier.height(10.dp))
 
 
-
         val modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
@@ -81,8 +84,8 @@ fun SellScreen () {
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
-                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                focusedBorderColor = Color(0xFFFFC107),
+                unfocusedBorderColor = Color.Black
             )
 
         )
@@ -94,8 +97,8 @@ fun SellScreen () {
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
-                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                focusedBorderColor = Color(0xFFFFC107),
+                unfocusedBorderColor = Color.Black
             )
         )
 
@@ -106,8 +109,8 @@ fun SellScreen () {
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
-                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                focusedBorderColor = Color(0xFFFFC107),
+                unfocusedBorderColor = Color.Black
             )
         )
 
@@ -118,8 +121,8 @@ fun SellScreen () {
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
-                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                focusedBorderColor = Color(0xFFFFC107),
+                unfocusedBorderColor = Color.Black
             )
         )
 

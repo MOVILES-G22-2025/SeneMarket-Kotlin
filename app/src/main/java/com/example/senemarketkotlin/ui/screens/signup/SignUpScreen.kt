@@ -79,7 +79,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             onValueChange = {viewModel.onSignUpFullNameChange(it)},
             label = { Text("Full name") },
             modifier = modifier,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         OutlinedTextField(
@@ -87,7 +91,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             onValueChange = { viewModel.onSignUpEmailChange(it)},
             label = { Text("Uniandes email") },
             modifier = modifier,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         OutlinedTextField(
@@ -95,7 +103,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             onValueChange = { viewModel.onSignUpCareerChange(it) },
             label = { Text("Career") },
             modifier = modifier,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         OutlinedTextField(
@@ -103,7 +115,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             onValueChange = { viewModel.onSignUpSemesterChange(it)},
             label = { Text("Semester") },
             modifier = modifier,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         OutlinedTextField(
@@ -112,7 +128,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             label = { Text("Password") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         OutlinedTextField(
@@ -121,7 +141,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
             label = { Text("Confirm password") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+            )
         )
 
         Spacer(modifier = Modifier.height(24.dp))

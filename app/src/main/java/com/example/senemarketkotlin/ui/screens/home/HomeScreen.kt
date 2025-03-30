@@ -1,19 +1,14 @@
 package com.example.senemarketkotlin.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +25,31 @@ import com.example.senemarketkotlin.viewmodels.HomeScreenViewModel
 @Composable
 fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
-    val homeScreenViewModel: HomeScreenViewModel = HomeScreenViewModel(dataLayerFacade, navController)
-    val products = homeScreenViewModel.product.collectAsState()
-    HomeScreenProducts(products.value)
+    val homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
+    val products by homeScreenViewModel.product.collectAsState(initial = emptyList())
+    //searchBar(navController)
+    HomeScreenProducts(products)
 }
+
+/*
+@Composable
+fun searchBar(navController: NavController) {
+    Column {
+        Button(
+            onClick = { navController.navigate("") },
+            modifier = TODO(),
+            enabled = TODO(),
+            shape = TODO(),
+            colors = TODO(),
+            elevation = TODO(),
+            border = TODO(),
+            contentPadding = TODO(),
+            interactionSource = TODO(),
+            content = TODO()
+        )
+    }
+}
+ */
 
 @Composable
 fun HomeScreenProducts(products: List<ProductModel>) {
@@ -54,7 +70,7 @@ fun ProductItem(product: ProductModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
             modifier = Modifier
-                .size(60.dp)
+                .size(100.dp)
                 .clip(CircleShape),
             model = product.imagePortada,
             contentDescription = "Product image"

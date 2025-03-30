@@ -141,7 +141,7 @@ fun ContentScreen(modifier: Modifier = Modifier,
     when (selectedIndex) {
 
         0 -> HomeScreen(
-
+            dataLayerFacade, navController
         )
 
         1 -> ChatScreen(

@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,17 +36,54 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
     val homeScreenViewModel: HomeScreenViewModel =
         viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
     val products by homeScreenViewModel.products.collectAsState()
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(Unit) {
         homeScreenViewModel.getProducts()
     }
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-    ){
+    ) {
+        SearchBar(searchQuery) { searchQuery = it }
         HomeScreenProducts(products)
+    }
+}
+
+@Composable
+fun SearchBar(searchQuery: TextFieldValue, onQueryChange: (TextFieldValue) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onQueryChange,
+            placeholder = { Text("Search products...") },
+            trailingIcon = {
+                Icon(Icons.Default.Search, contentDescription = "Search icon")
+            },
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(30.dp)),
+            shape = RoundedCornerShape(30.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.Black,
+                focusedBorderColor = Color.Black
+            )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        IconButton(onClick = { /* TODO: Navigate to cart */ }) {
+            Icon(
+                Icons.Default.ShoppingCart,
+                contentDescription = "Shopping cart icon",
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 }
 

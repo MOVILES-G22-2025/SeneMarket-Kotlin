@@ -20,9 +20,9 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
                     val product = doc.toObject(ProductModel::class.java)
 
                     product?.price = when (val rawPrice = doc.get("price")) {
-                        is Number -> rawPrice.toDouble()  // Si es número, convertir a Double
-                        is String -> rawPrice.toDoubleOrNull() ?: 0.0  // Si es String, intentar convertir
-                        else -> 0.0  // Si es null u otro tipo, asignar 0.0
+                        is Number -> rawPrice.toInt()  // Si es número, convertir a Double
+                        is String -> rawPrice.toIntOrNull() ?: 0 // Si es String, intentar convertir
+                        else -> 0  // Si es null u otro tipo, asignar 0.0
                     }
 
                     product

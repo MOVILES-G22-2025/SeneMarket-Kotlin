@@ -17,21 +17,14 @@ class HomeScreenViewModel(
     private val dataLayerFacade: DataLayerFacade
 ) : ViewModel() {
 
-    private val _product: MutableStateFlow<List<ProductModel>> =
-        MutableStateFlow<List<ProductModel>>(emptyList())
-    val product: StateFlow<List<ProductModel>> = _product
+    private val _products = MutableStateFlow<List<ProductModel>>(emptyList())
+    val products: StateFlow<List<ProductModel>> = _products
 
-    init {
-        getProducts()
-    }
-
-    private fun getProducts() {
+    fun getProducts() {
         viewModelScope.launch {
-            val result: List<ProductModel> = withContext(Dispatchers.IO) {
-                dataLayerFacade.getProducts()
-            }
+            val result: List<ProductModel> = dataLayerFacade.getProducts()
             Log.d("Firestore", "Productos obtenidos: $result")
-            _product.value = result
+            _products.value = result
         }
     }
 

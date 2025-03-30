@@ -1,5 +1,6 @@
 package com.example.senemarketkotlin.models
 
+import android.util.Log
 import com.example.senemarketkotlin.repositories.ProductRepository
 import com.example.senemarketkotlin.repositories.UserRepository
 
@@ -17,7 +18,9 @@ class DataLayerFacade (
     }
 
     suspend fun getProducts(): List<ProductModel> {
-        return productRepository.getAllProducts()
+        val result = productRepository.getAllProducts()
+        Log.d("Firestore", "Productos obtenidos Facade: $result")
+        return result
     }
 
 }

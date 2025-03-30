@@ -26,7 +26,7 @@ import com.example.senemarketkotlin.viewmodels.HomeScreenViewModel
 fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
     val homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
-    val products by homeScreenViewModel.product.collectAsState(initial = emptyList())
+    val products by homeScreenViewModel.products.collectAsState(initial = emptyList())
     //searchBar(navController)
     HomeScreenProducts(products)
 }

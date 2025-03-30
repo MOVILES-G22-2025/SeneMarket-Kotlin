@@ -1,5 +1,6 @@
 package com.example.senemarketkotlin.repositories
 
+import android.util.Log
 import com.example.senemarketkotlin.models.ProductModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,11 +14,25 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
     suspend fun getAllProducts(): List<ProductModel> {
         return try {
-            val querySnapshot = withContext(Dispatchers.IO) {
-                db.collection("products").get().await()
+            val snapshot = db.collection("products").get().await()
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    val product = doc.toObject(ProductModel::class.java)
+
+                    product?.price = when (val rawPrice = doc.get("price")) {
+                        is Number -> rawPrice.toDouble()  // Si es número, convertir a Double
+                        is String -> rawPrice.toDoubleOrNull() ?: 0.0  // Si es String, intentar convertir
+                        else -> 0.0  // Si es null u otro tipo, asignar 0.0
+                    }
+
+                    product
+                } catch (e: Exception) {
+                    Log.e("Dani", "Error deserializando producto: ${e.message}")
+                    null
+                }
             }
-            querySnapshot.documents.mapNotNull { it.toObject(ProductModel::class.java) }
         } catch (e: Exception) {
+            Log.e("Dani", "Error obteniendo productos: ${e.message}")
             emptyList()
         }
     }

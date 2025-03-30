@@ -26,8 +26,12 @@ import com.example.senemarketkotlin.viewmodels.HomeScreenViewModel
 fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
     val homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
-    val products by homeScreenViewModel.products.collectAsState(initial = emptyList())
+    val products by homeScreenViewModel.products.collectAsState()
     //searchBar(navController)
+
+    LaunchedEffect(Unit) {
+        homeScreenViewModel.getProducts()
+    }
     HomeScreenProducts(products)
 }
 
@@ -79,29 +83,4 @@ fun ProductItem(product: ProductModel) {
         Text(text = product.name.orEmpty(), color = Color.Black)
         Text(text = "$" + product.price.toString(), color = Color.Black)
     }
-}
-
-@Preview
-@Composable
-fun ProductItemPreview() {
-    val product = ProductModel(
-        category = "Transportation",
-        description = "333",
-        favoritedBy = listOf("KkLW90xOWqURCkjohEZn6ImrCV32"),
-        imagePortada = "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742477547599?alt=media&token=b6d34325-3849-4cd8-9cc9-1ffa267f5cdd",
-        imageUrls = listOf(
-            "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742558117414?alt=media&token=f5d1d10a-45e5-4d3c-a7bc-97f913fe380a",
-            "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742558117414?alt=media&token=f5d1d10a-45e5-4d3c-a7bc-97f913fe380a",
-            "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742558120171?alt=media&token=c4b6baae-3708-4aa7-95a9-37208cb6642c",
-            "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742558122173?alt=media&token=51f0d7b9-47b4-4234-985a-3cba37dd265a",
-            "https://firebasestorage.googleapis.com/v0/b/senemarket-app.firebasestorage.app/o/product_images%2F1742558123836?alt=media&token=fd44729f-075f-44c7-b2cc-866b1f707f0d"
-        ),
-        name = "varia",
-        price = "12354".toDouble(),
-        sellerName = "jcedielb",
-        timestamp = "21 de marzo de 2025, 6:55:27a.m. UTC-5",
-        userId = "KkLW90xOWqURCkjohEZn6ImrCV32"
-    )
-
-    ProductItem(product)
 }

@@ -1,14 +1,29 @@
 package com.example.senemarketkotlin.models
 
+import com.google.firebase.Timestamp
+
 data class ProductModel(
-    val category: String? = null,
-    val description: String? = null,
-    val favoritedBy: List<String>,
-    val imagePortada: String? = null,
-    val imageUrls: List<String>,
-    val name: String? = null,
-    val price: Double? = null,
-    val sellerName: String? = null,
-    val timestamp: String? = null,
-    val userId: String? = null,
+    var category: String? = null,
+    var description: String? = null,
+    var favoritedBy: List<String>? = null,
+    var imagePortada: String? = null,
+    var imageUrls: List<String>? = null,
+    var name: String? = null,
+    var price: Any? = null,
+    var sellerName: String? = null,
+    var timestamp: Timestamp? = null,
+    var userId: String? = null
+) {
+    constructor() : this(
+        category = null,
+        description = null,
+        favoritedBy = null,
+        imagePortada = null,
+        imageUrls = null,
+        name = null,
+        price = null,
+        sellerName = null,
+        timestamp = null,
+        userId = null
     )
+}

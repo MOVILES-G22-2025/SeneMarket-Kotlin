@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -47,13 +50,26 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        SearchBar(searchQuery) { searchQuery = it }
+        SearchBar(
+            searchQuery,
+            onQueryChange = { searchQuery = it },
+            onSearch = {
+                homeScreenViewModel.filterProducts(searchQuery.text)
+            }
+        )
         HomeScreenProducts(products)
     }
 }
 
 @Composable
-fun SearchBar(searchQuery: TextFieldValue, onQueryChange: (TextFieldValue) -> Unit) {
+fun SearchBar(
+    searchQuery: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
+    onSearch: () -> Unit
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +78,7 @@ fun SearchBar(searchQuery: TextFieldValue, onQueryChange: (TextFieldValue) -> Un
     ) {
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = onQueryChange,
+            onValueChange = { onQueryChange(it) },
             placeholder = { Text("Search products...") },
             trailingIcon = {
                 Icon(Icons.Default.Search, contentDescription = "Search icon")
@@ -74,6 +90,15 @@ fun SearchBar(searchQuery: TextFieldValue, onQueryChange: (TextFieldValue) -> Un
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color.Black,
                 focusedBorderColor = Color.Black
+            ),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = androidx.compose.ui.text.input.ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    onSearch()
+                }
             )
         )
         Spacer(modifier = Modifier.width(8.dp))

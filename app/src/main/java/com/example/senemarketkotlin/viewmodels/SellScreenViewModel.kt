@@ -191,4 +191,8 @@ class SellScreenViewModel (
         _imageUrl.value = uri
     }
 
+    fun goToHome(){
+        this.navController.navigate("home")
+    }
+
 }

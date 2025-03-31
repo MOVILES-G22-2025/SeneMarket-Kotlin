@@ -35,6 +35,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -68,6 +69,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Objects
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,7 +132,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { }
+                    .clickable { viewModel.goToHome()}
             )
         }
 
@@ -152,34 +154,78 @@ fun SellScreen (viewModel: SellScreenViewModel) {
         val price: Int by viewModel.price.observeAsState(initial = 0)
         val error: String by viewModel.error.observeAsState(initial = "")
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = {
-                permissionLauncher.launch(Manifest.permission.CAMERA)
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+
+
+           horizontalArrangement = Arrangement.spacedBy(16.dp),
+           verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedButton(
+                onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                modifier = Modifier.padding(5.dp),
+                shape = RoundedCornerShape(50),
+                border = ButtonDefaults.outlinedButtonBorder
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.camara),
+                    contentDescription = "Camera",
+                    modifier = Modifier.size(20.dp) // Ajusta el tamaño del ícono
+                )
+                Text(text = "Take photo", modifier = Modifier.padding(start = 8.dp))
+            }
+
+            OutlinedButton(
+                onClick = {
+                    val mediaRequest = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    pickImageFromAlbumLauncher.launch(mediaRequest)
+                },
+                modifier = Modifier.padding(5.dp),
+                shape = RoundedCornerShape(50),
+                border = ButtonDefaults.outlinedButtonBorder
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.upload),
+                    contentDescription = "Upload",
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(text = "Upload images", modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+
+
+
+        //Spacer(modifier = Modifier.height(20.dp))
+        //Button(
+        //onClick = {
+        //        permissionLauncher.launch(Manifest.permission.CAMERA)
                 //viewModel.createFile(currentContext)
                 //viewModel.imageUrl.value?.let {
                 //    cameraLauncher.launch(it)
                 //}
-                      }, modifier = Modifier
+        //   }, modifier = Modifier
                 //.fillMaxWidth()
-                .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
-        ) {
-            Text(text = "foto", color = White)
-        }
+    // .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
+        //  ) {
+        //    Text(text = "foto", color = White)
+        //     }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = {// Image picker does not require special permissions and can be activated right away
-                val mediaRequest = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                pickImageFromAlbumLauncher.launch(mediaRequest)}, modifier = Modifier
-                //.fillMaxWidth()
-                .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
-        ) {
-            Text(text = "galeria", color = White)
-        }
+    // Spacer(modifier = Modifier.height(20.dp))
+
+
+    // Button(
+    //     onClick = {// Image picker does not require special permissions and can be activated right away
+    //        val mediaRequest = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        //           pickImageFromAlbumLauncher.launch(mediaRequest)}, modifier = Modifier
+        //          //.fillMaxWidth()
+    //           .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
+    //  ) {
+    //       Text(text = "galeria", color = White)
+    //   }
         if (imageUri?.path?.isNotEmpty() == true)
             Column {
-                Text(text = "Selected Pictures")
+                Text(text = "Selected Pictures:", color = Color.Gray)
                 AsyncImage(modifier = Modifier.padding(8.dp),
                     model = imageUri,
                     contentDescription = null,
@@ -190,13 +236,14 @@ fun SellScreen (viewModel: SellScreenViewModel) {
                         viewModel.onImageUrlChange(Uri.EMPTY)
                     }, modifier = Modifier
                         //.fillMaxWidth()
-                        .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                        .padding(5.dp)
+                        .align(Alignment.CenterHorizontally), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
                 ) {
                     Text(text = "Remove image", color = White)
                 }
 
             }
-
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = nameProduct,
@@ -210,6 +257,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
             )
 
         )
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = description,
@@ -223,7 +271,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
             )
         )
 
-
+        Spacer(modifier = Modifier.height(10.dp))
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -248,6 +296,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
                 )
             )
 
+
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
@@ -264,7 +313,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
             }
         }
 
-
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = price.toString(),
             onValueChange = { viewModel.onPriceChange(it.toInt())},

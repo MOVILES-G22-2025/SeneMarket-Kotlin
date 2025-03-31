@@ -3,7 +3,7 @@ package com.example.senemarketkotlin.models
 import android.net.Uri
 
 data class ProductModel(
-    val nameProduct: String,
+    val name: String,
     val description: String,
     val category: String,
     val price: Int,

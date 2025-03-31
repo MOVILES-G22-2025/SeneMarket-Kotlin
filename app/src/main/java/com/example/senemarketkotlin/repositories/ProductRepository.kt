@@ -19,6 +19,8 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
                 try {
                     val product = doc.toObject(ProductModel::class.java)
 
+                    product?.id = doc.id
+
                     product?.price = when (val rawPrice = doc.get("price")) {
                         is Number -> rawPrice.toInt()  // Si es número, convertir a Double
                         is String -> rawPrice.toIntOrNull() ?: 0 // Si es String, intentar convertir
@@ -36,6 +38,32 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
             emptyList()
         }
     }
+
+    suspend fun getProductById(productId: String): ProductModel? {
+        return try {
+            val snapshot = db.collection("products").document(productId).get().await()
+
+            if (!snapshot.exists()) {
+                Log.e("Dani", "Producto con ID $productId no encontrado en Firestore.")
+                return null
+            }
+
+            val product = snapshot.toObject(ProductModel::class.java)?.apply {
+                id = snapshot.id  // Asigna manualmente el ID
+                price = when (val rawPrice = snapshot.get("price")) {
+                    is Number -> rawPrice.toInt()
+                    is String -> rawPrice.toIntOrNull() ?: 0
+                    else -> 0
+                }
+            }
+
+            product
+        } catch (e: Exception) {
+            Log.e("Dani", "Error obteniendo producto por ID: ${e.message}")
+            null
+        }
+    }
+
 
     suspend fun searchProducts(query: String): List<ProductModel> {
         return try {

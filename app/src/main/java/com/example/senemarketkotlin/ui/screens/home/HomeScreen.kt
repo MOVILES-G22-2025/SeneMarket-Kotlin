@@ -1,6 +1,7 @@
 package com.example.senemarketkotlin.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -57,7 +58,7 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
                 homeScreenViewModel.filterProducts(searchQuery.text)
             }
         )
-        HomeScreenProducts(products)
+        HomeScreenProducts(products, navController)
     }
 }
 
@@ -113,7 +114,7 @@ fun SearchBar(
 }
 
 @Composable
-fun HomeScreenProducts(products: List<ProductModel>) {
+fun HomeScreenProducts(products: List<ProductModel>, navController: NavController) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
@@ -121,18 +122,21 @@ fun HomeScreenProducts(products: List<ProductModel>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(products) { product ->
-            ProductItem(product)
+            ProductItem(product, navController)
         }
     }
 }
 
 @Composable
-fun ProductItem(product: ProductModel) {
+fun ProductItem(product: ProductModel, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(225.dp)
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+                    navController.navigate("productDetail/${product.id}")
+            },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)

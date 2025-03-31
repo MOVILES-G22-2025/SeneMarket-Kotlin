@@ -3,6 +3,7 @@ package com.example.senemarketkotlin.models
 import com.google.firebase.Timestamp
 
 data class ProductModel(
+    var id: String? = null,
     var category: String? = null,
     var description: String? = null,
     var favoritedBy: List<String>? = null,
@@ -15,6 +16,7 @@ data class ProductModel(
     var userId: String? = null
 ) {
     constructor() : this(
+        id = null,
         category = null,
         description = null,
         favoritedBy = null,

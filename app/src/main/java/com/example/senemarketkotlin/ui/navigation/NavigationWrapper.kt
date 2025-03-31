@@ -34,5 +34,8 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
         composable("home") {
             MainScreen(navHostController, dataLayerFacade, index = 0)
         }
+        composable("sell") {
+            MainScreen(navHostController, dataLayerFacade, index = 2)
+        }
     }
 }

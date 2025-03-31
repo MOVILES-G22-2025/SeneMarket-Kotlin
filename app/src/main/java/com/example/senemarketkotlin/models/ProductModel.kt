@@ -8,6 +8,7 @@ data class ProductModel(
     val category: String,
     val price: Int,
     val imageUrls: List<String?> = emptyList(),
+    val imagePortada: String? = null,
     val favoritedBy: List<String> = emptyList(),
     val userId: String? = null,
     val sellerName: String? = null

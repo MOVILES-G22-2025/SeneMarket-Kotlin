@@ -76,7 +76,7 @@ class SellScreenViewModel (
 
                 // Guardar producto en database
                 dataLayerFacade.addProduct(product = ProductModel(nameProduct,description,category,price,
-                    listOf( imageUrlInFirebase)))
+                    listOf( imageUrlInFirebase), imageUrlInFirebase))
                 navController.navigate ("home")
 
 

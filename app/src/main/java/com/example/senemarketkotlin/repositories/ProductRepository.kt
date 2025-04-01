@@ -122,30 +122,23 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
     suspend fun searchProducts(query: String): List<ProductModel> {
         return try {
             if (query.isBlank()) {
-                return getAllProducts() // Si la búsqueda está vacía, devuelve todos los productos
+                return getAllProducts()
             }
 
             val snapshot = db.collection("products")
-                .orderBy("name") // ⚠️ Asegúrate de indexar "name" en Firestore
+                .orderBy("name")
                 .whereGreaterThanOrEqualTo("name", query)
                 .whereLessThanOrEqualTo("name", query + "\uf8ff")
                 .get()
                 .await()
 
             snapshot.documents.mapNotNull { doc ->
-                try {
-                    val product = doc.toObject(ProductModel::class.java)
-
-                    product?.price = when (val rawPrice = doc.get("price")) {
+                doc.toObject(ProductModel::class.java)?.apply {
+                    price = when (val rawPrice = doc.get("price")) {
                         is Number -> rawPrice.toInt()
                         is String -> rawPrice.toIntOrNull() ?: 0
                         else -> 0
                     }
-
-                    product
-                } catch (e: Exception) {
-                    Log.e("Dani", "Error deserializando producto en búsqueda: ${e.message}")
-                    null
                 }
             }
         } catch (e: Exception) {

@@ -10,7 +10,10 @@ import com.example.senemarketkotlin.models.ProductModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.debounce
 import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel(
@@ -20,20 +23,33 @@ class HomeScreenViewModel(
     private val _products = MutableStateFlow<List<ProductModel>>(emptyList())
     val products: StateFlow<List<ProductModel>> = _products
 
+    private val _searchQuery = MutableStateFlow("")
     private val _filteredProducts = MutableStateFlow<List<ProductModel>>(emptyList())
     val filteredProducts: StateFlow<List<ProductModel>> = _filteredProducts
 
     init {
         getProducts()
+        viewModelScope.launch {
+            _searchQuery.debounce(300).collectLatest { query ->
+                _filteredProducts.value = if (query.isBlank()) {
+                    _products.value
+                } else {
+                    dataLayerFacade.getFilteredProducts(query)
+                }
+            }
+        }
     }
 
     fun getProducts() {
         viewModelScope.launch {
-            val result: List<ProductModel> = dataLayerFacade.getProducts()
-            Log.d("Firestore", "Productos obtenidos: $result")
+            val result = dataLayerFacade.getFilteredProducts("")
             _products.value = result
             _filteredProducts.value = result
         }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
     }
 
     fun filterProducts(query: String) {
@@ -41,7 +57,7 @@ class HomeScreenViewModel(
             if (query.isEmpty()) {
                 _filteredProducts.value = _products.value // Si no hay búsqueda, muestra todos
             } else {
-                val filteredList = dataLayerFacade.getFilteredProducts(query) // 🔥 Búsqueda en Firebase
+                val filteredList = dataLayerFacade.getFilteredProducts(query) // Búsqueda en Firebase
                 _filteredProducts.value = filteredList
             }
         }

@@ -76,7 +76,8 @@ fun ProductDetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color(0xFFF2F1F7))
-                .padding(16.dp),
+                .padding(16.dp)
+                .statusBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             Text(

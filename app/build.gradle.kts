@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.senemarketkotlin"
-        minSdk = 31
+        minSdk = 30
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -60,6 +60,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation("com.google.firebase:firebase-storage")
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.media3.exoplayer)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     testImplementation(libs.junit)

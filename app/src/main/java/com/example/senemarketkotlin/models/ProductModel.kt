@@ -1,4 +1,6 @@
 package com.example.senemarketkotlin.models
+import android.net.Uri
+
 
 import com.google.firebase.Timestamp
 
@@ -29,3 +31,4 @@ data class ProductModel(
         userId = null
     )
 }
+

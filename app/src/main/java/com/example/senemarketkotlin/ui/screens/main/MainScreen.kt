@@ -1,5 +1,6 @@
 package com.example.senemarketkotlin.ui.screens.main
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -36,7 +38,10 @@ import com.example.senemarketkotlin.ui.screens.profile.ProfileScreen
 import com.example.senemarketkotlin.ui.screens.sell.SellScreen
 import com.example.senemarketkotlin.ui.theme.Black
 import com.example.senemarketkotlin.ui.theme.Gray
+import com.example.senemarketkotlin.ui.theme.Gray2
+import com.example.senemarketkotlin.ui.theme.Pink80
 import com.example.senemarketkotlin.ui.theme.Yellow30
+import com.example.senemarketkotlin.viewmodels.SellScreenViewModel
 
 
 data class BottomNavItem(
@@ -75,7 +80,7 @@ fun MainScreen(navController: NavController,
     )
 
     var selectedIndex by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(index)
     }
 
         Scaffold(
@@ -113,7 +118,7 @@ fun MainScreen(navController: NavController,
                                 unselectedIconColor = Black,
                                 selectedTextColor = Gray,
                                 unselectedTextColor = Black,
-                                indicatorColor = Gray,
+                                indicatorColor = Gray2,
                             )
                         )
                     }
@@ -138,6 +143,8 @@ fun ContentScreen(modifier: Modifier = Modifier,
                   navController: NavController,
                   dataLayerFacade: DataLayerFacade) {
 
+    val sellScreenViewModel = SellScreenViewModel(navController, dataLayerFacade, LocalContext.current)
+
     when (selectedIndex) {
 
         0 -> HomeScreen(
@@ -148,7 +155,7 @@ fun ContentScreen(modifier: Modifier = Modifier,
 
         )
 
-        2 -> SellScreen(
+        2 -> SellScreen(sellScreenViewModel
 
         )
 

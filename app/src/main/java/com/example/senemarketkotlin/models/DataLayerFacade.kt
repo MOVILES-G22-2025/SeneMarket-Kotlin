@@ -1,13 +1,16 @@
 package com.example.senemarketkotlin.models
 
+import android.net.Uri
 import android.util.Log
 import com.example.senemarketkotlin.repositories.ProductRepository
 import com.example.senemarketkotlin.repositories.UserRepository
+import com.example.senemarketkotlin.repositories.StorageRepository
 
 class DataLayerFacade (
 
     private val userRepository: UserRepository,
     private val productRepository: ProductRepository,
+    private val storageRepository: StorageRepository
 ){
     suspend fun login(email: String, password: String) {
         return userRepository.login(email, password)
@@ -33,5 +36,13 @@ class DataLayerFacade (
 
     suspend fun findUserById(userId: String): UserModel? {
         return userRepository.findUserById(userId)
+    }
+    suspend fun addProduct(product: ProductModel) {
+        return productRepository.addProduct(product)
+
+    }
+
+    suspend fun uploadImage(uri: Uri): String {
+        return storageRepository.uploadImage(uri)
     }
 }

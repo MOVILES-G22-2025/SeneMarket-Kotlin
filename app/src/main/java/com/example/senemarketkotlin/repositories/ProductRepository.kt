@@ -16,6 +16,25 @@ import java.util.Locale
 
 class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth) {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun addProduct(productModel: ProductModel) {
+
+        val userId = auth.currentUser?.uid ?: throw Exception("Failed to get user ID")
+
+        println("USERID $userId")
+        val userDoc = db.collection("users")
+            .document(userId).get().await()
+        val sellerName = userDoc.getString("name") ?: userDoc.getString("fullName") ?: throw Exception("Seller name not found")
+        // Crear un nuevo modelo de producto con los campos adicionales
+        val updatedProduct = productModel.copy(
+            userId = userId,
+            sellerName = sellerName,
+            favoritedBy = emptyList() // Lista vacía de favoritos
+        )
+        val productRef = db.collection("products")
+            .add(updatedProduct).await()
+
+    }
     suspend fun getAllProducts(): List<ProductModel> {
         return try {
             val snapshot = db.collection("products")

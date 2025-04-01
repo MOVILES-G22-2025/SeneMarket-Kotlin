@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var userRepository: UserRepository
     private lateinit var productRepository: ProductRepository
+    private lateinit var storageRepository: StorageRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +39,13 @@ class MainActivity : ComponentActivity() {
         db = Firebase.firestore
         userRepository = UserRepository( db = db, auth = auth)
         productRepository = ProductRepository(db = db, auth = auth)
+        storageRepository = StorageRepository()
+
 
         val dataLayerFacade = DataLayerFacade(
             userRepository = userRepository,
-            productRepository = productRepository)
+            productRepository = productRepository,
+            storageRepository = storageRepository)
 
         setContent {
             navHostController = rememberNavController()

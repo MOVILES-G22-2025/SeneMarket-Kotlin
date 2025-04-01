@@ -9,6 +9,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth) {
 
@@ -39,6 +42,11 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         }
     }
 
+    private fun formatTimestamp(date: Date): String {
+        val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
+        return sdf.format(date)
+    }
+
     suspend fun getProductById(productId: String): ProductModel? {
         return try {
             val snapshot = db.collection("products").document(productId).get().await()
@@ -63,7 +71,6 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
             null
         }
     }
-
 
     suspend fun searchProducts(query: String): List<ProductModel> {
         return try {

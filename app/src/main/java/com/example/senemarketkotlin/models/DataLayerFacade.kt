@@ -31,4 +31,7 @@ class DataLayerFacade (
         return productRepository.getProductById(productId)
     }
 
+    suspend fun findUserById(userId: String): UserModel? {
+        return userRepository.findUserById(userId)
+    }
 }

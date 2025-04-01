@@ -2,10 +2,13 @@ package com.example.senemarketkotlin.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.ui.screens.home.HomeScreen
+import com.example.senemarketkotlin.ui.screens.home.ProductDetailScreen
 import com.example.senemarketkotlin.ui.screens.initial.InitialScreen
 import com.example.senemarketkotlin.ui.screens.login.LoginScreen
 import com.example.senemarketkotlin.ui.screens.main.MainScreen
@@ -33,6 +36,13 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
         }
         composable("home") {
             MainScreen(navHostController, dataLayerFacade, index = 0)
+        }
+        composable(
+            "productDetail/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: return@composable
+            ProductDetailScreen(productId, dataLayerFacade, navHostController)
         }
     }
 }

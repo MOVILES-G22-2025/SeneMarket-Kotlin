@@ -1,13 +1,20 @@
 package com.example.senemarketkotlin.models
 
-import android.util.Log
+
+import android.net.Uri
 import com.example.senemarketkotlin.repositories.ProductRepository
+import com.example.senemarketkotlin.repositories.StorageRepository
+
+import android.util.Log
+
 import com.example.senemarketkotlin.repositories.UserRepository
 
 class DataLayerFacade (
 
     private val userRepository: UserRepository,
-    private val productRepository: ProductRepository,
+    private val storageRepository: StorageRepository,
+    private val productRepository: ProductRepository
+
 ){
     suspend fun login(email: String, password: String) {
         return userRepository.login(email, password)
@@ -17,6 +24,15 @@ class DataLayerFacade (
         return userRepository.signUp(email, password, fullName, career, semester)
     }
 
+
+    suspend fun addProduct(product: ProductModel) {
+        return productRepository.addProduct(product)
+
+    }
+
+    suspend fun uploadImage(uri: Uri): String {
+        return storageRepository.uploadImage(uri)
+
     suspend fun getProducts(): List<ProductModel> {
         val result = productRepository.getAllProducts()
         Log.d("Firestore", "Productos obtenidos Facade: $result")
@@ -25,6 +41,7 @@ class DataLayerFacade (
 
     suspend fun getFilteredProducts(query: String): List<ProductModel> {
         return productRepository.searchProducts(query)
+
     }
 
     suspend fun getProductById(productId: String): ProductModel? {

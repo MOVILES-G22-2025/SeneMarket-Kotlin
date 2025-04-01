@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.repositories.ProductRepository
+import com.example.senemarketkotlin.repositories.StorageRepository
 import com.example.senemarketkotlin.repositories.UserRepository
 import com.example.senemarketkotlin.ui.navigation.NavigationWrapper
 import com.example.senemarketkotlin.ui.theme.SeneMarketKotlinTheme
@@ -28,7 +29,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var userRepository: UserRepository
+
+    private lateinit var storageRepository: StorageRepository
     private lateinit var productRepository: ProductRepository
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +42,17 @@ class MainActivity : ComponentActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
         userRepository = UserRepository( db = db, auth = auth)
-        productRepository = ProductRepository(db = db, auth = auth)
+
+        storageRepository = StorageRepository()
+        productRepository = ProductRepository( db = db, auth = auth)
 
         val dataLayerFacade = DataLayerFacade(
             userRepository = userRepository,
-            productRepository = productRepository)
+            storageRepository = storageRepository,
+          productRepository = productRepository)
 
+     
+       
         setContent {
             navHostController = rememberNavController()
 

@@ -42,6 +42,7 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
 
         composable("sell") {
             MainScreen(navHostController, dataLayerFacade, index = 2)
+        }
 
         composable(
             "productDetail/{productId}",

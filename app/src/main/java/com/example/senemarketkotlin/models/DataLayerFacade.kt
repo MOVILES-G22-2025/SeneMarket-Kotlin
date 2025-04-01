@@ -32,6 +32,7 @@ class DataLayerFacade (
 
     suspend fun uploadImage(uri: Uri): String {
         return storageRepository.uploadImage(uri)
+    }
 
     suspend fun getProducts(): List<ProductModel> {
         val result = productRepository.getAllProducts()

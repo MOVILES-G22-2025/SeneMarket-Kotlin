@@ -75,8 +75,14 @@ class SellScreenViewModel (
 
 
                 // Guardar producto en database
-                dataLayerFacade.addProduct(product = ProductModel(nameProduct,description,category,price,
-                    listOf( imageUrlInFirebase), imageUrlInFirebase))
+                dataLayerFacade.addProduct(product = ProductModel(
+                    name = nameProduct,
+                    description = description,
+                    category = category,
+                    price = price,
+                    imageUrls = listOf(imageUrlInFirebase),
+                    imagePortada = imageUrlInFirebase
+                ))
                 navController.navigate ("home")
 
 
@@ -120,7 +126,7 @@ class SellScreenViewModel (
                     val newImages = mutableListOf<Uri>()
                     for (eachImageUrl in intent.imageUrls) {
 
-                            newImages.add(eachImageUrl)
+                        newImages.add(eachImageUrl)
                     }
 
                     _imageUrl.value = null

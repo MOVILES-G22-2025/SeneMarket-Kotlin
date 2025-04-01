@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
+class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun addProduct(productModel: ProductModel) {
@@ -28,7 +28,8 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         println("USERID $userId")
         val userDoc = db.collection("users")
             .document(userId).get().await()
-        val sellerName = userDoc.getString("name") ?: userDoc.getString("fullName") ?: throw Exception("Seller name not found")
+        val sellerName = userDoc.getString("name") ?: userDoc.getString("fullName")
+        ?: throw Exception("Seller name not found")
         // Crear un nuevo modelo de producto con los campos adicionales
         val updatedProduct = productModel.copy(
             userId = userId,
@@ -57,8 +58,6 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
 
     }
-
-}
 
     suspend fun getAllProducts(): List<ProductModel> {
         return try {
@@ -154,4 +153,5 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
             emptyList()
         }
     }
+}
 

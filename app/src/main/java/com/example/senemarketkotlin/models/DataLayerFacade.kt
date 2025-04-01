@@ -17,7 +17,7 @@ class DataLayerFacade (
         return userRepository.signUp(email, password, fullName, career, semester)
     }
 
-    suspend fun getProducts(): List<ProductModel> {
+    suspend fun getAllProducts(): List<ProductModel> {
         val result = productRepository.getAllProducts()
         Log.d("Firestore", "Productos obtenidos Facade: $result")
         return result

@@ -29,7 +29,7 @@ class HomeScreenViewModel(
 
     fun getProducts() {
         viewModelScope.launch {
-            val result: List<ProductModel> = dataLayerFacade.getProducts()
+            val result: List<ProductModel> = dataLayerFacade.getAllProducts()
             Log.d("Firestore", "Productos obtenidos: $result")
             _products.value = result
             _filteredProducts.value = result
@@ -41,7 +41,7 @@ class HomeScreenViewModel(
             if (query.isEmpty()) {
                 _filteredProducts.value = _products.value // Si no hay búsqueda, muestra todos
             } else {
-                val filteredList = dataLayerFacade.getFilteredProducts(query) // 🔥 Búsqueda en Firebase
+                val filteredList = dataLayerFacade.getFilteredProducts(query) // Búsqueda en Firebase
                 _filteredProducts.value = filteredList
             }
         }

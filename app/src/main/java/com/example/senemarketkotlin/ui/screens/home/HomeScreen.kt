@@ -46,7 +46,7 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
     val homeScreenViewModel: HomeScreenViewModel =
         viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
-    val products by homeScreenViewModel.products.collectAsState()
+    val filteredProducts by homeScreenViewModel.filteredProducts.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     val selectedFilters = remember { mutableStateListOf<String>() }
@@ -84,25 +84,20 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
         SearchBar(
             searchQuery,
-            onQueryChange = { searchQuery = it },
-            onSearch = {
-                homeScreenViewModel.filterProducts(searchQuery.text)
+            onQueryChange = {
+                searchQuery = it
+                homeScreenViewModel.onSearchQueryChanged(it.text)
             }
         )
-
-        HomeScreenProducts(products, navController)
+        HomeScreenProducts(filteredProducts, navController)
     }
 }
 
 @Composable
 fun SearchBar(
     searchQuery: TextFieldValue,
-    onQueryChange: (TextFieldValue) -> Unit,
-    onSearch: () -> Unit
+    onQueryChange: (TextFieldValue) -> Unit
 ) {
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,23 +111,8 @@ fun SearchBar(
             trailingIcon = {
                 Icon(Icons.Default.Search, contentDescription = "Search icon")
             },
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(30.dp)),
-            shape = RoundedCornerShape(30.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color.Black,
-                focusedBorderColor = Color.Black
-            ),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = androidx.compose.ui.text.input.ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                    onSearch()
-                }
-            )
+            modifier = Modifier.weight(1f).clip(RoundedCornerShape(30.dp)),
+            shape = RoundedCornerShape(30.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         IconButton(onClick = { /* TODO: Navigate to cart */ }) {

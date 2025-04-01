@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -54,6 +56,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
@@ -225,8 +228,9 @@ fun SellScreen (viewModel: SellScreenViewModel) {
     //   }
         if (imageUri?.path?.isNotEmpty() == true)
             Column {
-                Text(text = "Selected Pictures:", color = Color.Gray)
-                AsyncImage(modifier = Modifier.padding(8.dp),
+                Text(text = "Selected Pictures:", color = Color.Gray,textAlign = TextAlign.Center)
+                AsyncImage(modifier = Modifier.padding(4.dp).width(120.dp)  // Ancho específico
+                    .height(200.dp),
                     model = imageUri,
                     contentDescription = null,
                     contentScale = ContentScale.FillWidth

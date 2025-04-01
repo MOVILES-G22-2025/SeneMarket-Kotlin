@@ -129,6 +129,7 @@ fun HomeScreenProducts(products: List<ProductModel>, navController: NavControlle
 
 @Composable
 fun ProductItem(product: ProductModel, navController: NavController) {
+    Spacer(modifier = Modifier.height(16.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,7 +153,7 @@ fun ProductItem(product: ProductModel, navController: NavController) {
                     .fillMaxWidth()
                     .size(120.dp)
                     .clip(RoundedCornerShape(12.dp)),
-                model = product.imagePortada,
+                model = product.imageUrls?.firstOrNull() ?: product.imagePortada,
                 contentDescription = "Product Image",
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
@@ -163,7 +164,8 @@ fun ProductItem(product: ProductModel, navController: NavController) {
                 fontSize = 14.sp,
                 fontFamily = FontFamily.SansSerif,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Left
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = "$${product.price}",
@@ -171,7 +173,8 @@ fun ProductItem(product: ProductModel, navController: NavController) {
                 fontSize = 14.sp,
                 fontFamily = FontFamily.SansSerif,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Left
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Bold
             )
         }
     }

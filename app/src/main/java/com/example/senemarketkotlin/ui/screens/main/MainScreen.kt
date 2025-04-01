@@ -38,6 +38,8 @@ import com.example.senemarketkotlin.ui.screens.profile.ProfileScreen
 import com.example.senemarketkotlin.ui.screens.sell.SellScreen
 import com.example.senemarketkotlin.ui.theme.Black
 import com.example.senemarketkotlin.ui.theme.Gray
+import com.example.senemarketkotlin.ui.theme.Gray2
+import com.example.senemarketkotlin.ui.theme.Pink80
 import com.example.senemarketkotlin.ui.theme.Yellow30
 import com.example.senemarketkotlin.viewmodels.SellScreenViewModel
 
@@ -116,7 +118,7 @@ fun MainScreen(navController: NavController,
                                 unselectedIconColor = Black,
                                 selectedTextColor = Gray,
                                 unselectedTextColor = Black,
-                                indicatorColor = Gray,
+                                indicatorColor = Gray2,
                             )
                         )
                     }
@@ -146,7 +148,7 @@ fun ContentScreen(modifier: Modifier = Modifier,
     when (selectedIndex) {
 
         0 -> HomeScreen(
-
+            dataLayerFacade, navController
         )
 
         1 -> ChatScreen(

@@ -35,6 +35,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -90,7 +91,12 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
                 onValueChange = { viewModel.onLoginEmailChange(it) },
                 label = { Text("Uniandes email") },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                    unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                )
+
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -101,7 +107,12 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFFC107), // Amarillo cuando está enfocado
+                    unfocusedBorderColor = Color.Black // Gris cuando no está enfocado
+                )
+
             )
 
             Spacer(modifier = Modifier.height(8.dp))

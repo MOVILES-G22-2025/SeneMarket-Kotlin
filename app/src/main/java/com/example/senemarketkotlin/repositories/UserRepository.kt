@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
 
 class UserRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
@@ -26,7 +27,7 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         val userId = authResult.user?.uid ?: throw Exception("Failed to get user ID")
 
         val user = UserModel(
-            fullName = fullName,
+            name = fullName,
             email = email,
             career = career,
             semester = semester,
@@ -69,6 +70,22 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         val userId = authResult.user?.uid ?: throw Exception("Failed to get user ID")
 
 
+    }
+
+    suspend fun findUserById(userId: String): UserModel? {
+        return try {
+            val snapshot = db.collection("users").document(userId).get().await()
+
+            if (!snapshot.exists()) {
+                return null
+            }
+
+            snapshot.toObject(UserModel::class.java)?.apply {
+                id = snapshot.id
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 
 }

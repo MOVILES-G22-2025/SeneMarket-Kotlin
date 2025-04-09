@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,8 @@ fun MainScreen(navController: NavController,
         ),
         BottomNavItem(
             label = "Favorites",
-            icon = ImageVector.vectorResource(R.drawable.star)
+            icon = ImageVector.vectorResource(R.drawable.ic_yellow_heart_outlined),
+
         ),
         BottomNavItem(
             label = "Profile",

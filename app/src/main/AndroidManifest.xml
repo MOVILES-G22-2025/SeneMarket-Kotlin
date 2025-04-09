@@ -22,7 +22,7 @@
         android:roundIcon="@drawable/senemarket"
         android:supportsRtl="true"
         android:theme="@style/Theme.SeneMarketKotlin"
-        tools:targetApi="31">
+        tools:targetApi="30">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

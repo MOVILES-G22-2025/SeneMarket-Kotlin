@@ -110,6 +110,16 @@ class HomeScreenViewModel(
         filterBySelectedCategories(current)
     }
 
+    fun registerCategoryClick(category: String) {
+        viewModelScope.launch {
+            try {
+                dataLayerFacade.updateUserCategoryClick(category)
+            } catch (e: Exception) {
+                Log.e("HomeScreenViewModel", "Error updating category click", e)
+            }
+        }
+    }
+
     class Factory(
         private val dataLayerFacade: DataLayerFacade,
     ) : ViewModelProvider.Factory {

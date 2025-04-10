@@ -129,7 +129,7 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
 
         }
 
-        HomeScreenProducts(filteredProducts, navController)
+        HomeScreenProducts(filteredProducts, navController, homeScreenViewModel)
     }
 }
 
@@ -204,7 +204,7 @@ fun FilterChip(
 
 
 @Composable
-fun HomeScreenProducts(products: List<ProductModel>, navController: NavController) {
+fun HomeScreenProducts(products: List<ProductModel>, navController: NavController, viewModel: HomeScreenViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
@@ -212,13 +212,13 @@ fun HomeScreenProducts(products: List<ProductModel>, navController: NavControlle
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(products) { product ->
-            ProductItem(product, navController)
+            ProductItem(product, navController, viewModel)
         }
     }
 }
 
 @Composable
-fun ProductItem(product: ProductModel, navController: NavController) {
+fun ProductItem(product: ProductModel, navController: NavController, viewModel: HomeScreenViewModel) {
     Spacer(modifier = Modifier.height(16.dp))
     Card(
         modifier = Modifier
@@ -226,7 +226,10 @@ fun ProductItem(product: ProductModel, navController: NavController) {
             .height(225.dp)
             .padding(8.dp)
             .clickable {
-                    navController.navigate("productDetail/${product.id}")
+                product.category?.let { category ->
+                    viewModel.registerCategoryClick(category)
+                }
+                navController.navigate("productDetail/${product.id}")
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),

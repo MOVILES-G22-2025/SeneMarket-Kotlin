@@ -111,5 +111,22 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         }
     }
 
+    suspend fun updateUserCategoryClick(category: String) {
+        val user = auth.currentUser ?: return
+        val userDocRef = db.collection("users").document(user.uid)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userDocRef)
+
+            val categoryClicks = snapshot.get("categoryClicks") as? Map<String, Long> ?: emptyMap()
+            val mutableClicks = categoryClicks.toMutableMap()
+            val currentValue = mutableClicks[category] ?: 0L
+            mutableClicks[category] = currentValue + 1
+
+            transaction.update(userDocRef, "categoryClicks", mutableClicks)
+        }.await()
+    }
+
+
 }
 

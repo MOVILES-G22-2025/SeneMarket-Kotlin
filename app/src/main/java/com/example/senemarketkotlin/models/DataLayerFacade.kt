@@ -65,4 +65,8 @@ class DataLayerFacade (
     suspend fun getUserCategoryClickRanking(): List<String> {
         return userRepository.getUserCategoryClickRanking()
     }
+
+    suspend fun updateUserCategoryClick(category: String) {
+        return userRepository.updateUserCategoryClick(category)
+    }
 }

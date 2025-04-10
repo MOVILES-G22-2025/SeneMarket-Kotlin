@@ -1,5 +1,6 @@
 package com.example.senemarketkotlin.repositories
 
+import android.util.Log
 import com.example.senemarketkotlin.models.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,7 +32,6 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             email = email,
             career = career,
             semester = semester,
-
         )
 
 
@@ -85,6 +85,29 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun getUserCategoryClickRanking(): List<String> {
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId.isNullOrEmpty()) {
+            Log.e("UserRepository", "No authenticated user found.")
+            return emptyList()
+        }
+
+        return try {
+            val snapshot = db.collection("users").document(userId).get().await()
+            val categoryClicks = snapshot.get("categoryClicks") as? Map<String, Long> ?: emptyMap()
+
+            categoryClicks.entries
+                .sortedByDescending { it.value }
+                .map { it.key }
+
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Error getting categoryClicks: ${e.message}")
+            emptyList()
         }
     }
 

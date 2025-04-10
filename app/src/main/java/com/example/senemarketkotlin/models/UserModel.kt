@@ -8,7 +8,11 @@ data class UserModel(
     var email: String? = null,
     var career: String? = null,
     var semester: String? = null,
+    var createdAt: Timestamp? = null,
+    var categoryClicks: Map<String, Long>? = null,
+    var favorites: List<String>? = null,
+    var fcmToken: String? = null
 ) {
-    constructor() : this(null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null, null)
 }
 

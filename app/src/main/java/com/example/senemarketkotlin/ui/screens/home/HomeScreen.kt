@@ -1,6 +1,7 @@
 package com.example.senemarketkotlin.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -37,6 +38,8 @@ import androidx.room.util.query
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.senemarketkotlin.R
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.models.ProductModel
 import com.example.senemarketkotlin.viewmodels.HomeScreenViewModel
@@ -48,12 +51,9 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
         viewModel(factory = HomeScreenViewModel.Factory(dataLayerFacade))
     val filteredProducts by homeScreenViewModel.filteredProducts.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    val categoryRanking by homeScreenViewModel.categoryRanking.collectAsState()
 
     val selectedFilters = remember { mutableStateListOf<String>() }
-    val filterOptions = listOf(
-        "Academic materials", "Clothing and accessories", "Entertainment",
-        "Housing", "Sports and fitness", "Technology and electronics", "Transportation"
-    )
 
     LaunchedEffect(Unit) {
         homeScreenViewModel.getProducts()
@@ -89,7 +89,47 @@ fun HomeScreen(dataLayerFacade: DataLayerFacade, navController: NavController) {
                 homeScreenViewModel.onSearchQueryChanged(it.text)
             }
         )
-        HomeScreenProducts(filteredProducts, navController)
+
+        if (categoryRanking.isNotEmpty()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_filter_list),
+                    contentDescription = "Filter icon",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(end = 8.dp)
+                )
+
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(categoryRanking) { category ->
+                        FilterChip(
+                            label = category,
+                            selected = selectedFilters.contains(category),
+                            onClick = {
+                                if (selectedFilters.contains(category)) {
+                                    selectedFilters.remove(category)
+                                } else {
+                                    selectedFilters.add(category)
+                                }
+                                homeScreenViewModel.filterBySelectedCategories(selectedFilters)
+                            }
+                        )
+                    }
+                }
+            }
+
+        }
+
+        HomeScreenProducts(filteredProducts, navController, homeScreenViewModel)
     }
 }
 
@@ -126,28 +166,45 @@ fun SearchBar(
 }
 
 @Composable
-fun FilterChip(text: String, isSelected: Boolean, onSelected: () -> Unit) {
-    val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color.LightGray
-    val textColor = if (isSelected) Color.White else Color.Black
+fun FilterChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val borderColor = Color.Black
+    val checkColor = Color(0xFFFFC928)
+    val backgroundColor = Color.White
 
-    Box(
+    Row(
         modifier = Modifier
-            .padding(horizontal = 4.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(24.dp))
             .background(backgroundColor)
-            .clickable { onSelected() }
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .border(1.dp, borderColor, RoundedCornerShape(24.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Box(
+            modifier = Modifier
+                .size(18.dp)
+                .border(2.dp, checkColor, CircleShape)
+                .background(
+                    if (selected) checkColor else Color.Transparent,
+                    shape = CircleShape
+                )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = text,
-            fontSize = 14.sp,
-            color = textColor
+            text = label,
+            color = Color.Black,
+            fontSize = 14.sp
         )
     }
 }
 
+
 @Composable
-fun HomeScreenProducts(products: List<ProductModel>, navController: NavController) {
+fun HomeScreenProducts(products: List<ProductModel>, navController: NavController, viewModel: HomeScreenViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
@@ -155,13 +212,13 @@ fun HomeScreenProducts(products: List<ProductModel>, navController: NavControlle
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(products) { product ->
-            ProductItem(product, navController)
+            ProductItem(product, navController, viewModel)
         }
     }
 }
 
 @Composable
-fun ProductItem(product: ProductModel, navController: NavController) {
+fun ProductItem(product: ProductModel, navController: NavController, viewModel: HomeScreenViewModel) {
     Spacer(modifier = Modifier.height(16.dp))
     Card(
         modifier = Modifier
@@ -169,7 +226,10 @@ fun ProductItem(product: ProductModel, navController: NavController) {
             .height(225.dp)
             .padding(8.dp)
             .clickable {
-                    navController.navigate("productDetail/${product.id}")
+                product.category?.let { category ->
+                    viewModel.registerCategoryClick(category)
+                }
+                navController.navigate("productDetail/${product.id}")
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),

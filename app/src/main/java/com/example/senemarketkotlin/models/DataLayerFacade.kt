@@ -25,7 +25,7 @@ class DataLayerFacade (
     }
 
     suspend fun getAllProducts(): List<ProductModel> {
-      val result = productRepository.getAllProducts()
+        val result = productRepository.getAllProducts()
         Log.d("Firestore", "Productos obtenidos Facade: $result")
         return result
     }
@@ -54,7 +54,19 @@ class DataLayerFacade (
         return productRepository.getProductById(productId)
     }
 
+    suspend fun getProductsByCategories(categories: List<String>): List<ProductModel> {
+        return productRepository.getProductsByCategories(categories)
+    }
+
     suspend fun findUserById(userId: String): UserModel? {
         return userRepository.findUserById(userId)
+    }
+
+    suspend fun getUserCategoryClickRanking(): List<String> {
+        return userRepository.getUserCategoryClickRanking()
+    }
+
+    suspend fun updateUserCategoryClick(category: String) {
+        return userRepository.updateUserCategoryClick(category)
     }
 }

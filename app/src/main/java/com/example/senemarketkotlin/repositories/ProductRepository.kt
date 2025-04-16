@@ -146,5 +146,30 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
             emptyList()
         }
     }
+
+    suspend fun getProductsByCategories(categories: List<String>): List<ProductModel> {
+        return try {
+            if (categories.isEmpty()) return getAllProducts()
+
+            val snapshot = db.collection("products")
+                .whereIn("category", categories)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get().await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(ProductModel::class.java)?.apply {
+                    id = doc.id
+                    price = when (val rawPrice = doc.get("price")) {
+                        is Number -> rawPrice.toInt()
+                        is String -> rawPrice.toIntOrNull() ?: 0
+                        else -> 0
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Dani", "Error filtrando productos por categorías: ${e.message}")
+            emptyList()
+        }
+    }
 }
 

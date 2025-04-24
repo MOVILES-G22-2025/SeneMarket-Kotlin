@@ -44,6 +44,14 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
             MainScreen(navHostController, dataLayerFacade, index = 2)
         }
 
+        composable("favorites") {
+            MainScreen(navHostController, dataLayerFacade, index = 3)
+        }
+
+        composable("profile") {
+            MainScreen(navHostController, dataLayerFacade, index = 4)
+        }
+
         composable(
             "productDetail/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType })

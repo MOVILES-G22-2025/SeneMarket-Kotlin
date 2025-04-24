@@ -161,7 +161,7 @@ fun ContentScreen(modifier: Modifier = Modifier,
 
         )
 
-        3 -> FavoritesScreen(
+        3 -> FavoritesScreen(dataLayerFacade, navController
 
         )
         4 -> ProfileScreen()

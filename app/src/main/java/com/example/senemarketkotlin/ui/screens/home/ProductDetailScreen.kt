@@ -227,20 +227,10 @@ fun ProductDetailScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFC928)),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier
-                        .weight(1f) // Permite que ambos botones ocupen la mitad del ancho de la fila
-                        .height(60.dp) // Aumenta la altura de los botones
-                ) {
-                    Text(text = "Buy now", fontSize = 18.sp, color = Color.White, fontFamily = FontFamily.SansSerif)
-                }
-                Button(
-                    onClick = { /* TODO: Agregar al carrito */ },
-                    shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier
                         .weight(1f)
-                        .height(60.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFC928))
+                        .height(60.dp)
                 ) {
-                    Text(text = "Add to cart", fontSize = 18.sp, color = Color.Black, fontFamily = FontFamily.SansSerif)
+                    Text(text = "Buy now", fontSize = 18.sp, color = Color.Black, fontFamily = FontFamily.SansSerif)
                 }
             }
 

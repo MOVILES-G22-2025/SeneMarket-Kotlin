@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.room.util.query
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.senemarketkotlin.R
@@ -154,14 +153,6 @@ fun SearchBar(
             modifier = Modifier.weight(1f).clip(RoundedCornerShape(30.dp)),
             shape = RoundedCornerShape(30.dp)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = { /* TODO: Navigate to cart */ }) {
-            Icon(
-                Icons.Default.ShoppingCart,
-                contentDescription = "Shopping cart icon",
-                modifier = Modifier.size(32.dp)
-            )
-        }
     }
 }
 

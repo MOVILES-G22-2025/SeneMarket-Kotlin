@@ -114,6 +114,7 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             try {
                 dataLayerFacade.updateUserCategoryClick(category)
+                getUserCategoryRanking()
             } catch (e: Exception) {
                 Log.e("HomeScreenViewModel", "Error updating category click", e)
             }

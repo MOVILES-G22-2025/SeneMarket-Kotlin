@@ -12,6 +12,11 @@ import kotlin.coroutines.resumeWithException
 
 class UserRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
 
+    val defaultCategories = listOf(
+        "Academic materials", "Technology and electronics", "Transportation",
+        "Clothing and accessories", "Housing", "Entertainment", "Sports and fitness"
+    )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun signUp(email: String, password: String,  fullName: String, career: String, semester: String) {
 
@@ -101,9 +106,13 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             val snapshot = db.collection("users").document(userId).get().await()
             val categoryClicks = snapshot.get("categoryClicks") as? Map<String, Long> ?: emptyMap()
 
-            categoryClicks.entries
-                .sortedByDescending { it.value }
-                .map { it.key }
+            if (categoryClicks.isEmpty()) {
+                defaultCategories
+            } else {
+                val sortedByClicks = categoryClicks.entries.sortedByDescending { it.value }.map { it.key }
+                val remaining = defaultCategories.filterNot { it in sortedByClicks }
+                sortedByClicks + remaining
+            }
 
         } catch (e: Exception) {
             Log.e("UserRepository", "Error getting categoryClicks: ${e.message}")

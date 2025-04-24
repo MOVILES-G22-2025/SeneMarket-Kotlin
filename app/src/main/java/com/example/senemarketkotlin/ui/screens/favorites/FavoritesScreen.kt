@@ -76,7 +76,7 @@ fun FavoritesScreen (dataLayerFacade: DataLayerFacade, navController: NavControl
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Home",
+                text = "Favorites",
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

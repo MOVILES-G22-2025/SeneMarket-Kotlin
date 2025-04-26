@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.models.ProductModel
+import com.example.senemarketkotlin.models.UserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +19,18 @@ class ProductDetailViewModel(
 
     private val _product = MutableStateFlow<ProductModel?>(null)
     val product: StateFlow<ProductModel?> = _product
+
     private val _userName = MutableStateFlow<String>("Cargando...")
     val userName: StateFlow<String> = _userName.asStateFlow()
 
+    private val _isFavorite = MutableStateFlow(false)
+    val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
+
+    private var currentUser: UserModel? = null
+
     init {
         loadProduct()
+        checkIfFavorite()
     }
 
     private fun loadProduct() {
@@ -32,6 +40,21 @@ class ProductDetailViewModel(
             } catch (e: Exception) {
                 Log.e("Dani", "Error cargando producto: ${e.message}")
             }
+        }
+    }
+
+    private fun checkIfFavorite() {
+        viewModelScope.launch {
+            currentUser = dataLayerFacade.getCurrentUser()
+            val isFav = currentUser?.favorites?.contains(productId) ?: false
+            _isFavorite.value = isFav
+        }
+    }
+
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            val updated = dataLayerFacade.toggleFavorite(productId)
+            _isFavorite.value = updated
         }
     }
 

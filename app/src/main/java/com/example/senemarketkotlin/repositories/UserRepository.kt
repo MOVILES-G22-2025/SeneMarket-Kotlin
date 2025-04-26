@@ -93,6 +93,34 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         }
     }
 
+    suspend fun getCurrentUser(): UserModel? {
+        val userId = auth.currentUser?.uid ?: return null
+        val doc = db.collection("users").document(userId).get().await()
+        return doc.toObject(UserModel::class.java)
+    }
+
+    suspend fun toggleFavorite(productId: String): Boolean {
+        val userId = auth.currentUser?.uid ?: return false
+        val userRef = db.collection("users").document(userId)
+
+        return try {
+            db.runTransaction { transaction ->
+                val snapshot = transaction.get(userRef)
+                val currentFavorites = snapshot.get("favorites") as? List<String> ?: emptyList()
+                val newFavorites = if (currentFavorites.contains(productId)) {
+                    currentFavorites - productId
+                } else {
+                    currentFavorites + productId
+                }
+                transaction.update(userRef, "favorites", newFavorites)
+                newFavorites.contains(productId)
+            }.await()
+        } catch (e: Exception) {
+            Log.e("Dani", "Error al alternar favorito: ${e.message}")
+            false
+        }
+    }
+
     suspend fun getUserCategoryClickRanking(): List<String> {
         val currentUser = auth.currentUser
         val userId = currentUser?.uid

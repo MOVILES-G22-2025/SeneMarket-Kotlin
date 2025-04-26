@@ -55,8 +55,6 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         }
 
         val userId = authResult.user?.uid ?: throw Exception("Failed to get user ID")
-
-
     }
 
     suspend fun getAllProducts(): List<ProductModel> = withContext(Dispatchers.IO) {

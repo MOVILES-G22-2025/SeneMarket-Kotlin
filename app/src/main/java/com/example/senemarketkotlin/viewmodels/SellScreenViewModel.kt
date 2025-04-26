@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.models.ProductModel
 import com.example.senemarketkotlin.utils.Intent
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.coroutines.coroutineContext
@@ -65,6 +66,7 @@ class SellScreenViewModel (
                 val category = _category.value.orEmpty()
                 val imageUrl = _imageUrl.value
                 val price = _price.value ?: 0
+                val timestamp = Timestamp.now()
 
                 if (imageUrl?.path?.isNotEmpty() != true) {
                     throw Exception("Seleccione una imagen")
@@ -79,6 +81,7 @@ class SellScreenViewModel (
                     name = nameProduct,
                     description = description,
                     category = category,
+                    timestamp = timestamp,
                     price = price,
                     imageUrls = listOf(imageUrlInFirebase),
                     imagePortada = imageUrlInFirebase

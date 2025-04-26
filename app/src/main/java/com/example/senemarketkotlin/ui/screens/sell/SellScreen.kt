@@ -68,6 +68,7 @@ import com.example.senemarketkotlin.ui.theme.Yellow30
 import com.example.senemarketkotlin.utils.Intent
 import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
 import com.example.senemarketkotlin.viewmodels.SellScreenViewModel
+import com.google.firebase.Timestamp
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -320,7 +321,10 @@ fun SellScreen (viewModel: SellScreenViewModel) {
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = price.toString(),
-            onValueChange = { viewModel.onPriceChange(it.toInt())},
+            onValueChange = { newValue ->
+                val sanitizedValue = newValue.toIntOrNull() ?: 0
+                viewModel.onPriceChange(sanitizedValue)
+            },
             label = { Text("Price") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
@@ -332,7 +336,7 @@ fun SellScreen (viewModel: SellScreenViewModel) {
         )
 
         if (error.isNotEmpty())
-            Text("Error: $error")
+            Text("$error", color = Color.Red)
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {viewModel.add()}, modifier = Modifier

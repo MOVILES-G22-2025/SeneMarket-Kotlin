@@ -48,6 +48,9 @@ class SellScreenViewModel (
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private val _isCreating = MutableLiveData(false)
+    val isCreating: LiveData<Boolean> = _isCreating
+
     var selectedPictures: List<Uri> = emptyList()
 
 
@@ -57,7 +60,9 @@ class SellScreenViewModel (
     )
 
     fun add() {
+
         viewModelScope.launch {
+            _isCreating.value = true
             try {
 
 
@@ -93,9 +98,10 @@ class SellScreenViewModel (
 
                 _error.value = e.message
 
+            } finally {
+                _isCreating.value = false
             }
         }
-
     }
 
 

@@ -59,8 +59,8 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
     }
 
-    suspend fun getAllProducts(): List<ProductModel> {
-        return try {
+    suspend fun getAllProducts(): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
             val snapshot = db.collection("products")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
@@ -79,15 +79,16 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
                     product
                 } catch (e: Exception) {
-                    Log.e("Dani", "Error deserializando producto: ${e.message}")
+                    Log.e("ProductRepository", "Error deserializando producto: ${e.message}")
                     null
                 }
             }
         } catch (e: Exception) {
-            Log.e("Dani", "Error obteniendo productos: ${e.message}")
+            Log.e("ProductRepository", "Error obteniendo productos: ${e.message}")
             emptyList()
         }
     }
+
 
     private fun formatTimestamp(date: Date): String {
         val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
@@ -119,10 +120,10 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         }
     }
 
-    suspend fun searchProducts(query: String): List<ProductModel> {
-        return try {
+    suspend fun searchProducts(query: String): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
             if (query.isBlank()) {
-                return getAllProducts()
+                return@withContext getAllProducts()
             }
 
             val snapshot = db.collection("products")
@@ -142,14 +143,15 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
                 }
             }
         } catch (e: Exception) {
-            Log.e("Dani", "Error en búsqueda de productos: ${e.message}")
+            Log.e("ProductRepository", "Error en búsqueda de productos: ${e.message}")
             emptyList()
         }
     }
 
-    suspend fun getProductsByCategories(categories: List<String>): List<ProductModel> {
-        return try {
-            if (categories.isEmpty()) return getAllProducts()
+
+    suspend fun getProductsByCategories(categories: List<String>): List<ProductModel> = withContext(Dispatchers.IO) {
+         try {
+            if (categories.isEmpty()) return@withContext getAllProducts()
 
             val snapshot = db.collection("products")
                 .whereIn("category", categories)
@@ -167,7 +169,7 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
                 }
             }
         } catch (e: Exception) {
-            Log.e("Dani", "Error filtrando productos por categorías: ${e.message}")
+            Log.e("ProductRepository", "Error filtrando productos por categorías: ${e.message}")
             emptyList()
         }
     }

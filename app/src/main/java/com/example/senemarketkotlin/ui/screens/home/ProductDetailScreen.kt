@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductDetailScreen(
     productId: String,
+    fromScreen: String,
     dataLayerFacade: DataLayerFacade,
     navController: NavController
 ) {
@@ -89,7 +90,17 @@ fun ProductDetailScreen(
             )
 
             IconButton(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    if (fromScreen == "favorites") {
+                        navController.navigate("favorites") {
+                            popUpTo("favorites") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    }
+                },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(

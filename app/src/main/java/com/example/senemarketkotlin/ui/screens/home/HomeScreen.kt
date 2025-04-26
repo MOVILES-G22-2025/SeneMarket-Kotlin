@@ -220,7 +220,7 @@ fun ProductItem(product: ProductModel, navController: NavController, viewModel: 
                 product.category?.let { category ->
                     viewModel.registerCategoryClick(category)
                 }
-                navController.navigate("productDetail/${product.id}")
+                navController.navigate("productDetail/${product.id}?fromScreen=home")
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),

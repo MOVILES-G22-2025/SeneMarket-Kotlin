@@ -74,7 +74,7 @@ fun MainScreen(navController: NavController,
             label = "Favorites",
             icon = ImageVector.vectorResource(R.drawable.ic_yellow_heart_outlined),
 
-        ),
+            ),
         BottomNavItem(
             label = "Profile",
             icon = Icons.Outlined.Person
@@ -85,58 +85,58 @@ fun MainScreen(navController: NavController,
         mutableIntStateOf(index)
     }
 
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            bottomBar = {
-                NavigationBar(
-                    containerColor = colorScheme.onPrimary,
-                    tonalElevation = 5.dp,
-                ) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            NavigationBar(
+                containerColor = colorScheme.onPrimary,
+                tonalElevation = 5.dp,
+            ) {
 
-                    var n = navItemList.size
-                    var item : BottomNavItem ? = null
-                    for (index in 0  until n){
-                        item = navItemList[index]
-                        NavigationBarItem(
-                            selected = selectedIndex == index,
-                            onClick = {
-                                selectedIndex = index
-                            },
-                            label = {
-                                Text(
-                                    text = item.label,
-                                    fontSize = 11.sp
+                var n = navItemList.size
+                var item : BottomNavItem ? = null
+                for (index in 0  until n){
+                    item = navItemList[index]
+                    NavigationBarItem(
+                        selected = selectedIndex == index,
+                        onClick = {
+                            selectedIndex = index
+                        },
+                        label = {
+                            Text(
+                                text = item.label,
+                                fontSize = 11.sp
 
-                                )
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.label
-                                )
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Yellow30,
-                                unselectedIconColor = Black,
-                                selectedTextColor = Gray,
-                                unselectedTextColor = Black,
-                                indicatorColor = Gray2,
                             )
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = item.label
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Yellow30,
+                            unselectedIconColor = Black,
+                            selectedTextColor = Gray,
+                            unselectedTextColor = Black,
+                            indicatorColor = Gray2,
                         )
-                    }
+                    )
                 }
             }
-        ) { innerPadding ->
-
-            ContentScreen(
-                modifier = Modifier.padding(innerPadding),
-                selectedIndex = selectedIndex,
-                navController = navController,
-                dataLayerFacade = dataLayerFacade
-            )
-
         }
+    ) { innerPadding ->
+
+        ContentScreen(
+            modifier = Modifier.padding(innerPadding),
+            selectedIndex = selectedIndex,
+            navController = navController,
+            dataLayerFacade = dataLayerFacade
+        )
+
     }
+}
 
 
 @Composable
@@ -162,8 +162,8 @@ fun ContentScreen(modifier: Modifier = Modifier,
         )
 
         3 -> FavoritesScreen(dataLayerFacade, navController
-
         )
+
         4 -> ProfileScreen(dataLayerFacade, navController)
 
     }

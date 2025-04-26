@@ -53,11 +53,14 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
         }
 
         composable(
-            "productDetail/{productId}",
-            arguments = listOf(navArgument("productId") { type = NavType.StringType })
-        ) { backStackEntry ->
+            "productDetail/{productId}?fromScreen={fromScreen}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType },
+                navArgument("fromScreen") { type = NavType.StringType}
+            )
+        ){ backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: return@composable
-            ProductDetailScreen(productId, dataLayerFacade, navHostController)
+            val fromScreen = backStackEntry.arguments?.getString("fromScreen") ?: "home"
+            ProductDetailScreen(productId, fromScreen, dataLayerFacade, navHostController)
 
         }
     }

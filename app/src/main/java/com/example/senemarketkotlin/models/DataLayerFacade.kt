@@ -49,6 +49,10 @@ class DataLayerFacade (
         return productRepository.searchProducts(query)
     }
 
+    suspend fun getFilteredFavoritesProducts(query: String): List<ProductModel> {
+        return productRepository.searchFavoritesProducts(query)
+    }
+
     suspend fun getProductById(productId: String): ProductModel? {
         return productRepository.getProductById(productId)
     }

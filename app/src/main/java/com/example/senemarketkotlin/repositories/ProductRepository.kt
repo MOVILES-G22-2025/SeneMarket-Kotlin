@@ -59,8 +59,8 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
     }
 
-    suspend fun getAllProducts(): List<ProductModel> {
-        return try {
+    suspend fun getAllProducts(): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
             val snapshot = db.collection("products")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
@@ -79,12 +79,59 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
 
                     product
                 } catch (e: Exception) {
-                    Log.e("Dani", "Error deserializando producto: ${e.message}")
+                    Log.e("ProductRepository", "Error deserializando producto: ${e.message}")
                     null
                 }
             }
         } catch (e: Exception) {
-            Log.e("Dani", "Error obteniendo productos: ${e.message}")
+            Log.e("ProductRepository", "Error obteniendo productos: ${e.message}")
+            emptyList()
+        }
+    }
+
+    suspend fun getAllFavoritesProducts(): List<ProductModel> {
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId.isNullOrEmpty()) {
+            Log.e("UserRepository", "No authenticated user found.")
+            return emptyList()
+        }
+
+        return try {
+            val userSnapshot = db.collection("users").document(userId).get().await()
+            val favoriteIds = userSnapshot.get("favorites") as? List<String> ?: emptyList()
+
+            if (favoriteIds.isEmpty()) {
+                return emptyList()
+            }
+
+            val favoriteProducts = mutableListOf<ProductModel>()
+
+            for (id in favoriteIds) {
+                try {
+                    val productDoc = db.collection("products").document(id).get().await()
+                    if (productDoc.exists()) {
+                        val product = productDoc.toObject(ProductModel::class.java)
+                        product?.id = productDoc.id
+
+                        product?.price = when (val rawPrice = productDoc.get("price")) {
+                            is Number -> rawPrice.toInt()
+                            is String -> rawPrice.toIntOrNull() ?: 0
+                            else -> 0
+                        }
+
+                        product?.let { favoriteProducts.add(it) }
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProductRepository", "Error getting product $id: ${e.message}")
+                }
+            }
+
+            return favoriteProducts
+
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Error getting favorites: ${e.message}")
             emptyList()
         }
     }
@@ -119,37 +166,74 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         }
     }
 
-    suspend fun searchProducts(query: String): List<ProductModel> {
-        return try {
+    suspend fun searchProducts(query: String): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
             if (query.isBlank()) {
-                return getAllProducts() // Si la búsqueda está vacía, devuelve todos los productos
+                return@withContext getAllProducts()
             }
 
             val snapshot = db.collection("products")
-                .orderBy("name") // ⚠️ Asegúrate de indexar "name" en Firestore
+                .orderBy("name")
                 .whereGreaterThanOrEqualTo("name", query)
                 .whereLessThanOrEqualTo("name", query + "\uf8ff")
                 .get()
                 .await()
 
             snapshot.documents.mapNotNull { doc ->
-                try {
-                    val product = doc.toObject(ProductModel::class.java)
-
-                    product?.price = when (val rawPrice = doc.get("price")) {
+                doc.toObject(ProductModel::class.java)?.apply {
+                    price = when (val rawPrice = doc.get("price")) {
                         is Number -> rawPrice.toInt()
                         is String -> rawPrice.toIntOrNull() ?: 0
                         else -> 0
                     }
-
-                    product
-                } catch (e: Exception) {
-                    Log.e("Dani", "Error deserializando producto en búsqueda: ${e.message}")
-                    null
                 }
             }
         } catch (e: Exception) {
-            Log.e("Dani", "Error en búsqueda de productos: ${e.message}")
+            Log.e("ProductRepository", "Error en búsqueda de productos: ${e.message}")
+            emptyList()
+        }
+    }
+
+    suspend fun searchFavoritesProducts(query: String): List<ProductModel> {
+        return try {
+            val favorites = getAllFavoritesProducts()
+
+            if (query.isBlank()) {
+                return favorites
+            }
+
+            // Filtrar por nombre, categoría o descripción si quieres hacerlo más completo
+            favorites.filter {
+                it.name?.contains(query, ignoreCase = true) ?: false
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Error en búsqueda de productos favoritos: ${e.message}")
+            emptyList()
+        }
+    }
+
+
+    suspend fun getProductsByCategories(categories: List<String>): List<ProductModel> = withContext(Dispatchers.IO) {
+         try {
+            if (categories.isEmpty()) return@withContext getAllProducts()
+
+            val snapshot = db.collection("products")
+                .whereIn("category", categories)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get().await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(ProductModel::class.java)?.apply {
+                    id = doc.id
+                    price = when (val rawPrice = doc.get("price")) {
+                        is Number -> rawPrice.toInt()
+                        is String -> rawPrice.toIntOrNull() ?: 0
+                        else -> 0
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Error filtrando productos por categorías: ${e.message}")
             emptyList()
         }
     }

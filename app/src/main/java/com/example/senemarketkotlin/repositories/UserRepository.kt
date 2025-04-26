@@ -1,5 +1,6 @@
 package com.example.senemarketkotlin.repositories
 
+import android.util.Log
 import com.example.senemarketkotlin.models.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,6 +11,11 @@ import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
 
 class UserRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
+
+    val defaultCategories = listOf(
+        "Academic materials", "Technology and electronics", "Transportation",
+        "Clothing and accessories", "Housing", "Entertainment", "Sports and fitness"
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun signUp(email: String, password: String,  fullName: String, career: String, semester: String) {
@@ -31,7 +37,6 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             email = email,
             career = career,
             semester = semester,
-
         )
 
 
@@ -87,6 +92,50 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             null
         }
     }
+
+    suspend fun getUserCategoryClickRanking(): List<String> {
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId.isNullOrEmpty()) {
+            Log.e("UserRepository", "No authenticated user found.")
+            return emptyList()
+        }
+
+        return try {
+            val snapshot = db.collection("users").document(userId).get().await()
+            val categoryClicks = snapshot.get("categoryClicks") as? Map<String, Long> ?: emptyMap()
+
+            if (categoryClicks.isEmpty()) {
+                defaultCategories
+            } else {
+                val sortedByClicks = categoryClicks.entries.sortedByDescending { it.value }.map { it.key }
+                val remaining = defaultCategories.filterNot { it in sortedByClicks }
+                sortedByClicks + remaining
+            }
+
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Error getting categoryClicks: ${e.message}")
+            emptyList()
+        }
+    }
+
+    suspend fun updateUserCategoryClick(category: String) {
+        val user = auth.currentUser ?: return
+        val userDocRef = db.collection("users").document(user.uid)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userDocRef)
+
+            val categoryClicks = snapshot.get("categoryClicks") as? Map<String, Long> ?: emptyMap()
+            val mutableClicks = categoryClicks.toMutableMap()
+            val currentValue = mutableClicks[category] ?: 0L
+            mutableClicks[category] = currentValue + 1
+
+            transaction.update(userDocRef, "categoryClicks", mutableClicks)
+        }.await()
+    }
+
 
 }
 

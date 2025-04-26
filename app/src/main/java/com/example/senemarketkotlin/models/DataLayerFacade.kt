@@ -32,7 +32,6 @@ class DataLayerFacade (
 
     suspend fun addProduct(product: ProductModel) {
         return productRepository.addProduct(product)
-
     }
 
     suspend fun uploadImage(uri: Uri): String {
@@ -71,5 +70,13 @@ class DataLayerFacade (
 
     suspend fun updateUserCategoryClick(category: String) {
         return userRepository.updateUserCategoryClick(category)
+    }
+
+    suspend fun getCurrentUser(): UserModel? {
+        return userRepository.getCurrentUser()
+    }
+
+    suspend fun toggleFavorite(productId: String): Boolean {
+        return userRepository.toggleFavorite(productId)
     }
 }

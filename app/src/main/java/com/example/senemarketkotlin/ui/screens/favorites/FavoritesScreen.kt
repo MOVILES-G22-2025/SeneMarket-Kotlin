@@ -143,7 +143,7 @@ fun ProductItem(product: ProductModel, navController: NavController, viewModel: 
             .height(225.dp)
             .padding(8.dp)
             .clickable {
-                navController.navigate("productDetail/${product.id}")
+                navController.navigate("productDetail/${product.id}?fromScreen=favorites")
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),

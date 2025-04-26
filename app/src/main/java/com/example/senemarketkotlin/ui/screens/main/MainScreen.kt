@@ -2,8 +2,13 @@ package com.example.senemarketkotlin.ui.screens.main
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.Home
@@ -16,10 +21,12 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -29,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.senemarketkotlin.R
 import com.example.senemarketkotlin.models.DataLayerFacade
@@ -42,6 +50,8 @@ import com.example.senemarketkotlin.ui.theme.Gray
 import com.example.senemarketkotlin.ui.theme.Gray2
 import com.example.senemarketkotlin.ui.theme.Pink80
 import com.example.senemarketkotlin.ui.theme.Yellow30
+import com.example.senemarketkotlin.utils.NetworkConnectivityObserver
+import com.example.senemarketkotlin.viewmodels.MainViewModel
 import com.example.senemarketkotlin.viewmodels.SellScreenViewModel
 
 
@@ -55,6 +65,8 @@ data class BottomNavItem(
 fun MainScreen(navController: NavController,
                dataLayerFacade: DataLayerFacade, index: Int = 0 ) {
 
+    val viewModel: MainViewModel = viewModel()
+    val isConnected by viewModel.isConnected.collectAsState()
 
     val navItemList = listOf(
         BottomNavItem(
@@ -74,7 +86,7 @@ fun MainScreen(navController: NavController,
             label = "Favorites",
             icon = ImageVector.vectorResource(R.drawable.ic_yellow_heart_outlined),
 
-        ),
+            ),
         BottomNavItem(
             label = "Profile",
             icon = Icons.Outlined.Person
@@ -85,6 +97,7 @@ fun MainScreen(navController: NavController,
         mutableIntStateOf(index)
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
@@ -92,22 +105,12 @@ fun MainScreen(navController: NavController,
                     containerColor = colorScheme.onPrimary,
                     tonalElevation = 5.dp,
                 ) {
-
-                    var n = navItemList.size
-                    var item : BottomNavItem ? = null
-                    for (index in 0  until n){
-                        item = navItemList[index]
+                    navItemList.forEachIndexed { idx, item ->
                         NavigationBarItem(
-                            selected = selectedIndex == index,
-                            onClick = {
-                                selectedIndex = index
-                            },
+                            selected = selectedIndex == idx,
+                            onClick = { selectedIndex = idx },
                             label = {
-                                Text(
-                                    text = item.label,
-                                    fontSize = 11.sp
-
-                                )
+                                Text(text = item.label, fontSize = 11.sp)
                             },
                             icon = {
                                 Icon(
@@ -127,16 +130,23 @@ fun MainScreen(navController: NavController,
                 }
             }
         ) { innerPadding ->
-
             ContentScreen(
                 modifier = Modifier.padding(innerPadding),
                 selectedIndex = selectedIndex,
                 navController = navController,
                 dataLayerFacade = dataLayerFacade
             )
+        }
 
+        // Overlay de conexión en esquina superior izquierda
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 8.dp)
+            .align(Alignment.TopEnd)) {
+            NetworkStatusIndicator(isConnected)
         }
     }
+}
 
 
 @Composable
@@ -162,11 +172,38 @@ fun ContentScreen(modifier: Modifier = Modifier,
         )
 
         3 -> FavoritesScreen(dataLayerFacade, navController
-
         )
+
         4 -> ProfileScreen(dataLayerFacade, navController)
 
     }
 }
+
+@Composable
+fun NetworkStatusIndicator(isConnected: Boolean) {
+    if (!isConnected) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_no_wifi),
+                contentDescription = "Sin conexión",
+                tint = Color.Red,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "Sin conexión",
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
+            )
+        }
+    }
+}
+
+
 
 

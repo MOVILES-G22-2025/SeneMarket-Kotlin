@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.models.ProductModel
 import com.example.senemarketkotlin.utils.Intent
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.coroutines.coroutineContext
@@ -47,6 +48,9 @@ class SellScreenViewModel (
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private val _isCreating = MutableLiveData(false)
+    val isCreating: LiveData<Boolean> = _isCreating
+
     var selectedPictures: List<Uri> = emptyList()
 
 
@@ -56,7 +60,9 @@ class SellScreenViewModel (
     )
 
     fun add() {
+
         viewModelScope.launch {
+            _isCreating.value = true
             try {
 
 
@@ -65,6 +71,7 @@ class SellScreenViewModel (
                 val category = _category.value.orEmpty()
                 val imageUrl = _imageUrl.value
                 val price = _price.value ?: 0
+                val timestamp = Timestamp.now()
 
                 if (imageUrl?.path?.isNotEmpty() != true) {
                     throw Exception("Seleccione una imagen")
@@ -79,6 +86,7 @@ class SellScreenViewModel (
                     name = nameProduct,
                     description = description,
                     category = category,
+                    timestamp = timestamp,
                     price = price,
                     imageUrls = listOf(imageUrlInFirebase),
                     imagePortada = imageUrlInFirebase
@@ -90,9 +98,10 @@ class SellScreenViewModel (
 
                 _error.value = e.message
 
+            } finally {
+                _isCreating.value = false
             }
         }
-
     }
 
 

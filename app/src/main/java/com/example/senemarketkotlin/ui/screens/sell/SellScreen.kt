@@ -33,6 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -68,6 +69,7 @@ import com.example.senemarketkotlin.ui.theme.Yellow30
 import com.example.senemarketkotlin.utils.Intent
 import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
 import com.example.senemarketkotlin.viewmodels.SellScreenViewModel
+import com.google.firebase.Timestamp
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -79,6 +81,7 @@ import java.util.Objects
 @Composable
 fun SellScreen (viewModel: SellScreenViewModel) {
     val currentContext = LocalContext.current
+    val isCreating: Boolean by viewModel.isCreating.observeAsState(initial = false)
 
     // launches photo picker
     val pickImageFromAlbumLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -320,7 +323,10 @@ fun SellScreen (viewModel: SellScreenViewModel) {
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = price.toString(),
-            onValueChange = { viewModel.onPriceChange(it.toInt())},
+            onValueChange = { newValue ->
+                val sanitizedValue = newValue.toIntOrNull() ?: 0
+                viewModel.onPriceChange(sanitizedValue)
+            },
             label = { Text("Price") },
             modifier = modifier,
             shape = RoundedCornerShape(8.dp),
@@ -332,14 +338,25 @@ fun SellScreen (viewModel: SellScreenViewModel) {
         )
 
         if (error.isNotEmpty())
-            Text("Error: $error")
+            Text("$error", color = Color.Red)
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = {viewModel.add()}, modifier = Modifier
+            onClick = {viewModel.add()}, enabled = !isCreating, modifier = Modifier
                 //.fillMaxWidth()
                 .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
         ) {
-            Text(text = "Add", color = White)
+            if (isCreating) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(end = 8.dp),
+                    strokeWidth = 2.dp
+                )
+                Text(text = "Creating...", color = White)
+            } else {
+                Text(text = "Add", color = White)
+            }
         }
 
 

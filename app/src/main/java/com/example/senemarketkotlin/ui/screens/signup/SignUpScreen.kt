@@ -151,7 +151,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel) {
         Spacer(modifier = Modifier.height(24.dp))
 
         if (error.isNotEmpty())
-            Text("Error: $error")
+            Text("$error", color = Color.Red)
 
         // Register button
         Button(

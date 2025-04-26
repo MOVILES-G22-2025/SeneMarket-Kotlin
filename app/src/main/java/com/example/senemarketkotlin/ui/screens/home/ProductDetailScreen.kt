@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductDetailScreen(
     productId: String,
+    fromScreen: String,
     dataLayerFacade: DataLayerFacade,
     navController: NavController
 ) {
@@ -48,6 +49,7 @@ fun ProductDetailScreen(
         viewModel(factory = ProductDetailViewModel.Factory(dataLayerFacade, productId))
     val product by viewModel.product.collectAsState()
     val userName by viewModel.userName.collectAsState()
+    val isFavorite by viewModel.isFavorite.collectAsState()
 
     LaunchedEffect(product?.userId) {
         product?.userId?.let { userId ->
@@ -64,7 +66,6 @@ fun ProductDetailScreen(
 
     val images = product?.imageUrls.orEmpty()
     var selectedImageIndex by remember { mutableStateOf(0) }
-    var isFavorite by remember { mutableStateOf(false) }
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -89,7 +90,17 @@ fun ProductDetailScreen(
             )
 
             IconButton(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    if (fromScreen == "favorites") {
+                        navController.navigate("favorites") {
+                            popUpTo("favorites") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    }
+                },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(
@@ -154,7 +165,7 @@ fun ProductDetailScreen(
                     fontFamily = FontFamily.SansSerif,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = { isFavorite = !isFavorite }) {
+                IconButton(onClick = { viewModel.toggleFavorite() }) {
                     Icon(
                         painter = if (isFavorite) painterResource(R.drawable.ic_yellow_heart_filled) else painterResource(
                             R.drawable.ic_yellow_heart_outlined

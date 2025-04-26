@@ -41,28 +41,43 @@ class SignUpScreenViewModel (
     }
 
     fun register() {
+        val fullNameValue = _fullName.value.orEmpty()
+        val emailValue = _email.value.orEmpty()
+        val passwordValue = _password.value.orEmpty()
+        val confirmPasswordValue = _confirmPassword.value.orEmpty()
+        val careerValue = _career.value.orEmpty()
+        val semesterValue = _semester.value.orEmpty()
+
+        // Validaciones
+        when {
+            !emailValue.endsWith("@uniandes.edu.co") -> {
+                _error.value = "The email must be a Uniandes email (@uniandes.edu.co)"
+                return
+            }
+            semesterValue.toIntOrNull() == null || semesterValue.toInt() >= 15 || semesterValue.toInt() <= 0 -> {
+                _error.value = "The semester must be a number between 1 and 15"
+                return
+            }
+            passwordValue != confirmPasswordValue -> {
+                _error.value = "The passwords do not match"
+                return
+            }
+            else -> {
+                _error.value = "" // Limpia errores
+            }
+        }
+
         viewModelScope.launch {
             try {
-
-                    val fullNameValue = _fullName.value.orEmpty()
-                    val emailValue = _email.value.orEmpty()
-                    val passwordValue = _password.value.orEmpty()
-                    val careerValue = _career.value.orEmpty()
-                    val semesterValue = _semester.value.orEmpty()
-
-                    dataLayerFacade.signUp(emailValue, passwordValue, fullNameValue, careerValue, semesterValue)
-                    navController.navigate ("home")
-
-
+                dataLayerFacade.signUp(emailValue, passwordValue, fullNameValue, careerValue, semesterValue)
+                navController.navigate ("home")
             } catch (e: Exception) {
                 val errorMessage = when {
                     e.message?.contains("email", ignoreCase = true) == true ->
                         "This email has already register, please sign in or try with a different email."
-                    else -> "Error during sign up: ${e.message}"
+                    else -> "${e.message}"
                 }
-
                 _error.value = errorMessage
-
             }
         }
 
@@ -73,7 +88,6 @@ class SignUpScreenViewModel (
 
     fun onSignUpPasswordChange(password: String) {
         _password.value = password
-
     }
 
     fun onSignUpConfirmPasswordChange(confirmPassword: String) {
@@ -94,9 +108,4 @@ class SignUpScreenViewModel (
     fun onSignUpFullNameChange(fullName: String) {
         _fullName.value = fullName
     }
-
-
-
-
-
 }

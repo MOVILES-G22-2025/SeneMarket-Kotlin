@@ -129,7 +129,7 @@ fun LoginScreen(viewModel: LoginScreenViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
             if (error.isNotEmpty())
-                Text("Error: $error")
+                Text("$error")
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {viewModel.login()}, modifier = Modifier

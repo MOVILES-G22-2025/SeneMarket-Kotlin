@@ -110,9 +110,8 @@ fun ProfileScreen (dataLayerFacade: DataLayerFacade, navController: NavControlle
         val options = listOf(
             "Edit profile" to Icons.Default.Edit,
             "My products" to Icons.Default.ShoppingCart,
-            "Future sections" to Icons.Default.Settings,
-            "Future sections" to Icons.Default.Settings,
-            "Future sections" to Icons.Default.Settings
+            "My drafts" to Icons.Default.Settings,
+            "Favorites" to Icons.Default.Settings,
         )
 
         Column(

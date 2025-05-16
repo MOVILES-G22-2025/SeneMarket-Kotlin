@@ -12,7 +12,7 @@ data class ProductModel(
     var imagePortada: String? = null,
     var imageUrls: List<String>? = null,
     var name: String? = null,
-    var price: Any? = null,
+    var price: Int? = null,
     var sellerName: String? = null,
     var timestamp: Timestamp? = null,
     var userId: String? = null

@@ -1,6 +1,7 @@
 package com.example.senemarketkotlin.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,7 +28,7 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
         composable("splash") { SplashScreen(navHostController) }
         composable("initial"){
             InitialScreen(
-                viewModel = InitialScreenViewModel(navHostController)
+                viewModel = InitialScreenViewModel(navHostController, LocalContext.current)
             )
         }
         composable("login"){

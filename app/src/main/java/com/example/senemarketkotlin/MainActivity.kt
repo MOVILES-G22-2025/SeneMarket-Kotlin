@@ -15,6 +15,7 @@ import com.example.senemarketkotlin.repositories.StorageRepository
 import com.example.senemarketkotlin.repositories.UserRepository
 import com.example.senemarketkotlin.ui.navigation.NavigationWrapper
 import com.example.senemarketkotlin.ui.theme.SeneMarketKotlinTheme
+import com.example.senemarketkotlin.utils.PriceDropChecker
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -66,6 +67,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        PriceDropChecker.appContext = applicationContext
     }
 
     override fun onStart() {

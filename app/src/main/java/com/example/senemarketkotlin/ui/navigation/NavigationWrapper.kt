@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, dataLayerFacade: DataLayerFacade){
 
     NavHost(navController = navHostController , startDestination = "splash"){
-        composable("splash") { SplashScreen(navHostController) }
+        composable("splash") { SplashScreen(navHostController, auth) }
         composable("initial"){
             InitialScreen(
                 viewModel = InitialScreenViewModel(navHostController)

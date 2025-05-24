@@ -1,6 +1,5 @@
 package com.example.senemarketkotlin.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import com.example.senemarketkotlin.utils.PriceDropChecker
 
 class FavoritesScreenViewModel(
     private val dataLayerFacade: DataLayerFacade
@@ -42,6 +42,7 @@ class FavoritesScreenViewModel(
             val result = dataLayerFacade.getFilteredFavoritesProducts("")
             _products.value = result
             _filteredProducts.value = result
+            PriceDropChecker.checkPriceDrops(result)
         }
     }
 

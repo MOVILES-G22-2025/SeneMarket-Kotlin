@@ -86,7 +86,7 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             }
 
             snapshot.toObject(UserModel::class.java)?.apply {
-                id = snapshot.id
+                var id = snapshot.id
             }
         } catch (e: Exception) {
             null

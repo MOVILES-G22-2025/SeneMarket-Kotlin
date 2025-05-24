@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.crashlytics)
-
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -71,11 +71,15 @@ dependencies {
     // Exoplayer
     implementation(libs.androidx.media3.exoplayer)
 
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+
     // Coil (image loading)
     implementation(libs.coil)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0") // Nueva versión de Coil para Compose
 
     // Tests
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

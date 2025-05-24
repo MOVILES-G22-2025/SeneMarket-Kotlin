@@ -1,5 +1,7 @@
 package com.example.senemarketkotlin
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var storageRepository: StorageRepository
     private lateinit var productRepository: ProductRepository
+    private lateinit var sharedPreferences: SharedPreferences
 
 
 
@@ -43,9 +46,10 @@ class MainActivity : ComponentActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
         userRepository = UserRepository( db = db, auth = auth)
+        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE)
 
         storageRepository = StorageRepository()
-        productRepository = ProductRepository( db = db, auth = auth)
+        productRepository = ProductRepository( db = db, auth = auth, sharedPreferences = sharedPreferences)
 
         val dataLayerFacade = DataLayerFacade(
             userRepository = userRepository,

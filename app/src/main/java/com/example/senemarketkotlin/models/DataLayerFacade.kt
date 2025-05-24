@@ -38,6 +38,22 @@ class DataLayerFacade (
         return storageRepository.uploadImage(uri)
     }
 
+    suspend fun existsDraftProduct(): Boolean {
+        return productRepository.existsDraftProduct()
+    }
+
+    suspend fun clearDraftProduct() {
+        productRepository.clearDraftProduct()
+    }
+
+    suspend fun getDraftProduct(): ProductModel {
+        return productRepository.getDraftProduct()
+    }
+
+    suspend fun saveDraftProduct(product: ProductModel) {
+        productRepository.saveDraftProduct(product)
+    }
+
     suspend fun getProducts(): List<ProductModel> {
         val result = productRepository.getAllProducts()
         Log.d("Firestore", "Productos obtenidos Facade: $result")

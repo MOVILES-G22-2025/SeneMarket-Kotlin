@@ -9,6 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UserRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
 
@@ -173,7 +175,9 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             "career" to career
         )
 
-        db.collection("users").document(userId).update(updates).await()
+        withContext(Dispatchers.IO) {
+            db.collection("users").document(userId).update(updates).await()
+        }
     }
 }
 

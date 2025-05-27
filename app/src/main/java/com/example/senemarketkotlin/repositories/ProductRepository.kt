@@ -1,6 +1,7 @@
 package com.example.senemarketkotlin.repositories
 
 
+import android.content.SharedPreferences
 import com.example.senemarketkotlin.models.ProductModel
 import com.example.senemarketkotlin.models.UserModel
 import com.google.firebase.auth.FirebaseAuth
@@ -14,11 +15,15 @@ import android.util.Log
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
-class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth) {
+class ProductRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth, private val sharedPreferences: SharedPreferences) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun addProduct(productModel: ProductModel) {
@@ -233,6 +238,33 @@ class ProductRepository(private val db: FirebaseFirestore, private val auth: Fir
         } catch (e: Exception) {
             Log.e("ProductRepository", "Error filtrando productos por categorías: ${e.message}")
             emptyList()
+        }
+    }
+
+    suspend fun existsDraftProduct(): Boolean {
+        return sharedPreferences.contains("draftProduct")
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    suspend fun getDraftProduct(): ProductModel {
+        val raw = sharedPreferences.getString("draftProduct", "{}")
+        val product = Json.decodeFromString<ProductModel>(raw?: "{}")
+        return product
+    }
+
+    suspend fun clearDraftProduct() {
+        with (sharedPreferences.edit()) {
+            remove("draftProduct")
+            apply()
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    suspend fun saveDraftProduct(product: ProductModel) {
+        val json = Json.encodeToString(product)
+        with (sharedPreferences.edit()) {
+            putString("draftProduct", json)
+            apply()
         }
     }
 }

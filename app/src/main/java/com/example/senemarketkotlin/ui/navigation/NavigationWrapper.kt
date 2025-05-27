@@ -1,6 +1,7 @@
 package com.example.senemarketkotlin.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,6 +18,7 @@ import com.example.senemarketkotlin.ui.screens.splash.SplashScreen
 import com.example.senemarketkotlin.viewmodels.InitialScreenViewModel
 import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
 import com.example.senemarketkotlin.viewmodels.SignUpScreenViewModel
+import com.example.senemarketkotlin.ui.screens.profile.EditProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -24,10 +26,10 @@ import com.google.firebase.auth.FirebaseAuth
 fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, dataLayerFacade: DataLayerFacade){
 
     NavHost(navController = navHostController , startDestination = "splash"){
-        composable("splash") { SplashScreen(navHostController) }
+        composable("splash") { SplashScreen(navHostController, auth) }
         composable("initial"){
             InitialScreen(
-                viewModel = InitialScreenViewModel(navHostController)
+                viewModel = InitialScreenViewModel(navHostController, LocalContext.current)
             )
         }
         composable("login"){
@@ -62,6 +64,10 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
             val fromScreen = backStackEntry.arguments?.getString("fromScreen") ?: "home"
             ProductDetailScreen(productId, fromScreen, dataLayerFacade, navHostController)
 
+        }
+
+        composable("editProfile") {
+            EditProfileScreen(navHostController, dataLayerFacade)
         }
     }
 }

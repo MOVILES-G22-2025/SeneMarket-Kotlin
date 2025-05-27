@@ -14,12 +14,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.models.ProductModel
+import com.example.senemarketkotlin.repositories.ConnectivityRepository
 import com.example.senemarketkotlin.utils.Intent
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.coroutineContext
 
@@ -53,6 +57,8 @@ class SellScreenViewModel (
 
     var selectedPictures: List<Uri> = emptyList()
 
+    private val _isOffline = MutableLiveData(false)
+    val isOffline: LiveData<Boolean> = _isOffline
 
     val categories = listOf(
         "Academic materials", "Technology and electronics", "Transportation",
@@ -61,8 +67,15 @@ class SellScreenViewModel (
 
     fun add() {
 
+        val isConnected = ConnectivityRepository.isOnline(context)
+        if (!isConnected) {
+            _isCreating.value = false
+            _isOffline.value = true
+            return
+        }
         viewModelScope.launch {
             _isCreating.value = true
+
             try {
 
 
@@ -74,12 +87,42 @@ class SellScreenViewModel (
                 val timestamp = Timestamp.now()
 
                 if (imageUrl?.path?.isNotEmpty() != true) {
-                    throw Exception("Seleccione una imagen")
+                    throw Exception("Select an image")
                 }
 
-                // Guardar imagen en storage
-                val imageUrlInFirebase = dataLayerFacade.uploadImage(imageUrl)
+                if (nameProduct.isEmpty()) {
+                    throw Exception("Enter a name for your product")
+                }
 
+                if (nameProduct.length > 20) {
+                    throw Exception("Enter a shorter name for your product")
+                }
+
+                if (description.isEmpty()) {
+                    throw Exception("Add a description to your product")
+                }
+
+                if (description.length > 200) {
+                    throw Exception("Enter a shorter name for your product")
+                }
+
+                if (category.isEmpty()) {
+                    throw Exception("Select a category for your product")
+                }
+
+                if (price<= 0) {
+                    throw Exception("Your price is not valid")
+                }
+
+
+
+
+
+                // Guardar imagen en storage
+                val imageUrlInFirebase =
+                    withContext(Dispatchers.IO) {
+                        dataLayerFacade.uploadImage(imageUrl)
+                    }
 
                 // Guardar producto en database
                 dataLayerFacade.addProduct(product = ProductModel(
@@ -91,6 +134,7 @@ class SellScreenViewModel (
                     imageUrls = listOf(imageUrlInFirebase),
                     imagePortada = imageUrlInFirebase
                 ))
+                dataLayerFacade.clearDraftProduct()
                 navController.navigate ("home")
 
 
@@ -188,6 +232,42 @@ class SellScreenViewModel (
 
     fun onImageUrlChange(uri: Uri) {
         _imageUrl.value = uri
+    }
+
+    fun checkDraftProduct() {
+        viewModelScope.launch {
+            if (dataLayerFacade.existsDraftProduct()) {
+                val product = dataLayerFacade.getDraftProduct()
+                _nameProduct.value = product.name ?: ""
+                _description.value = product.description ?: ""
+                _price.value = product.price ?: 0
+                _category.value = product.category ?: ""
+            }
+        }
+    }
+
+    fun saveDraftProduct() {
+        viewModelScope.launch {
+            _isCreating.value = true
+            val nameProduct = _nameProduct.value.orEmpty()
+            val description = _description.value.orEmpty()
+            val category = _category.value.orEmpty()
+            val imageUrl = _imageUrl.value
+            val price = _price.value ?: 0
+            val timestamp = Timestamp.now()
+
+            dataLayerFacade.saveDraftProduct(
+                product = ProductModel(
+                    name = nameProduct,
+                    description = description,
+                    category = category,
+                    timestamp = timestamp,
+                    price = price
+                )
+            )
+            _isCreating.value = false
+            navController.navigate ("home")
+        }
     }
 
     fun createFile(context: Context)

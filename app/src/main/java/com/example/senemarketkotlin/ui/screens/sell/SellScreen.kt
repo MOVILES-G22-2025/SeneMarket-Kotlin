@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -82,6 +83,7 @@ import java.util.Objects
 fun SellScreen (viewModel: SellScreenViewModel) {
     val currentContext = LocalContext.current
     val isCreating: Boolean by viewModel.isCreating.observeAsState(initial = false)
+    val isOffline: Boolean by viewModel.isOffline.observeAsState(initial = false)
 
     // launches photo picker
     val pickImageFromAlbumLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -93,15 +95,6 @@ fun SellScreen (viewModel: SellScreenViewModel) {
     val file  = currentContext.createImageFile()
     val uri = FileProvider.getUriForFile(Objects.requireNonNull(currentContext), currentContext.packageName + ".provider", file)
 
-    // launches camera
-//    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isImageSaved ->
-//        if (isImageSaved) {
-//            viewModel.onReceive(Intent.OnImageSavedWith(currentContext))
-//        } else {
-//            // handle image saving error or cancellation
-//            viewModel.onReceive(Intent.OnImageSavingCanceled)
-//        }
-//    }
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
         viewModel.onImageUrlChange(uri)
     }
@@ -117,6 +110,8 @@ fun SellScreen (viewModel: SellScreenViewModel) {
             viewModel.onReceive(Intent.OnPermissionDenied)
         }
     }
+
+    viewModel.checkDraftProduct()
 
     Column(
         modifier = Modifier
@@ -200,35 +195,6 @@ fun SellScreen (viewModel: SellScreenViewModel) {
             }
         }
 
-
-
-        //Spacer(modifier = Modifier.height(20.dp))
-        //Button(
-        //onClick = {
-        //        permissionLauncher.launch(Manifest.permission.CAMERA)
-                //viewModel.createFile(currentContext)
-                //viewModel.imageUrl.value?.let {
-                //    cameraLauncher.launch(it)
-                //}
-        //   }, modifier = Modifier
-                //.fillMaxWidth()
-    // .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
-        //  ) {
-        //    Text(text = "foto", color = White)
-        //     }
-
-    // Spacer(modifier = Modifier.height(20.dp))
-
-
-    // Button(
-    //     onClick = {// Image picker does not require special permissions and can be activated right away
-    //        val mediaRequest = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        //           pickImageFromAlbumLauncher.launch(mediaRequest)}, modifier = Modifier
-        //          //.fillMaxWidth()
-    //           .padding(5.dp), colors = ButtonDefaults.buttonColors(containerColor = Yellow30)
-    //  ) {
-    //       Text(text = "galeria", color = White)
-    //   }
         if (imageUri?.path?.isNotEmpty() == true)
             Column {
                 Text(text = "Selected Pictures:", color = Color.Gray,textAlign = TextAlign.Center)
@@ -364,7 +330,42 @@ fun SellScreen (viewModel: SellScreenViewModel) {
 
         Spacer(modifier = Modifier.height(100.dp))
     }
+    OfflineDraftPopup(
+        isOffline = isOffline,
+        onSaveDraft = {
+            // Lógica para guardar borrador
+            viewModel.saveDraftProduct()
+        },
+        onDismiss = {
+        }
+    )
 }
+
+@Composable
+fun OfflineDraftPopup(
+    isOffline: Boolean,
+    onSaveDraft: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (isOffline) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(text = "No internet connection")
+            },
+            text = {
+                Text("Your product will be saved as a draft. Revisit this screen later to view the draft.")
+            },
+            confirmButton = {
+                Button(onClick = onSaveDraft) {
+                    Text("Save draft")
+                }
+            }
+        )
+    }
+}
+
+
         // Title
 fun Context.createImageFile(): File {
     val timestamp = SimpleDateFormat("yyyy_MM_dd_hh:mm:ss").format(Date())

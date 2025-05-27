@@ -22,14 +22,22 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.senemarketkotlin.R
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController, auth: FirebaseAuth) {
     LaunchedEffect(Unit) {
         delay(2000) // Espera 2 segundos
-        navController.navigate("initial") {
-            popUpTo("splash") { inclusive = true }
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            navController.navigate("home") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else {
+            navController.navigate("initial") {
+                popUpTo("splash") { inclusive = true }
+            }
         }
     }
 

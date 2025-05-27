@@ -1,5 +1,9 @@
 package com.example.senemarketkotlin.ui.screens.favorites
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,12 +41,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -57,7 +63,21 @@ fun FavoritesScreen (dataLayerFacade: DataLayerFacade, navController: NavControl
     val filteredProducts by favoritesScreenViewModel.filteredProducts.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
+    val context = LocalContext.current
+    val permissionGranted = remember { mutableStateOf(false) }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        permissionGranted.value = isGranted
+    }
+
     LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            permissionGranted.value = true
+        }
         favoritesScreenViewModel.getProducts()
     }
 
@@ -129,7 +149,7 @@ fun HomeScreenProducts(products: List<ProductModel>, navController: NavControlle
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(products) { product ->
-            com.example.senemarketkotlin.ui.screens.favorites.ProductItem(product, navController, viewModel)
+            ProductItem(product, navController, viewModel)
         }
     }
 }

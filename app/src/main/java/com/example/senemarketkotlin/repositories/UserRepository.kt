@@ -164,6 +164,16 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         }.await()
     }
 
+    suspend fun updateUser(name: String, semester: String, career: String) {
+        val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
 
+        val updates = mapOf(
+            "name" to name,
+            "semester" to semester,
+            "career" to career
+        )
+
+        db.collection("users").document(userId).update(updates).await()
+    }
 }
 

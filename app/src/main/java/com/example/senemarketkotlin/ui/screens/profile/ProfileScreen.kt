@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.senemarketkotlin.R
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.example.senemarketkotlin.models.DataLayerFacade
 import com.example.senemarketkotlin.viewmodels.ProfileScreenViewModel
 import androidx.compose.material.icons.filled.Settings as Settings
@@ -48,8 +50,7 @@ import androidx.compose.material.icons.filled.Settings as Settings
 @Composable
 fun ProfileScreen (dataLayerFacade: DataLayerFacade, navController: NavController) {
     val viewModel: ProfileScreenViewModel = viewModel(factory = ProfileScreenViewModel.Factory(dataLayerFacade))
-
-    //val user by viewModel.user.collectAsState()
+    val userName by viewModel.userName.collectAsState()
 
     Column(
         modifier = Modifier
@@ -98,7 +99,7 @@ fun ProfileScreen (dataLayerFacade: DataLayerFacade, navController: NavControlle
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Hello, User",
+                text = "Hello, $userName",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -128,7 +129,11 @@ fun ProfileScreen (dataLayerFacade: DataLayerFacade, navController: NavControlle
                             Color(0xFFF2F1F7),
                             shape = RoundedCornerShape(topStart = 0.dp, topEnd = 30.dp, bottomEnd = 30.dp, bottomStart = 0.dp)
                         )
-                        .clickable { /* TODO: handle navigation if needed */ }
+                        .clickable {
+                            if (text == "Edit profile") {
+                                navController.navigate("editProfile")
+                            }
+                        }
                         .padding(18.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

@@ -88,11 +88,16 @@ class DataLayerFacade (
         return userRepository.updateUserCategoryClick(category)
     }
 
+    suspend fun toggleFavorite(productId: String): Boolean {
+        return userRepository.toggleFavorite(productId)
+    }
+
+    suspend fun updateUser(name: String, semester: String, career: String) {
+        userRepository.updateUser(name, semester, career)
+    }
+
     suspend fun getCurrentUser(): UserModel? {
         return userRepository.getCurrentUser()
     }
 
-    suspend fun toggleFavorite(productId: String): Boolean {
-        return userRepository.toggleFavorite(productId)
-    }
 }

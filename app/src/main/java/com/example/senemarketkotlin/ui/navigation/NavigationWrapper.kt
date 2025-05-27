@@ -18,6 +18,7 @@ import com.example.senemarketkotlin.ui.screens.splash.SplashScreen
 import com.example.senemarketkotlin.viewmodels.InitialScreenViewModel
 import com.example.senemarketkotlin.viewmodels.LoginScreenViewModel
 import com.example.senemarketkotlin.viewmodels.SignUpScreenViewModel
+import com.example.senemarketkotlin.ui.screens.profile.EditProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -63,6 +64,10 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
             val fromScreen = backStackEntry.arguments?.getString("fromScreen") ?: "home"
             ProductDetailScreen(productId, fromScreen, dataLayerFacade, navHostController)
 
+        }
+
+        composable("editProfile") {
+            EditProfileScreen(navHostController, dataLayerFacade)
         }
     }
 }

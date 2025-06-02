@@ -9,6 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UserRepository(private val db: FirebaseFirestore, private val auth: FirebaseAuth){
 
@@ -86,7 +88,7 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
             }
 
             snapshot.toObject(UserModel::class.java)?.apply {
-                id = snapshot.id
+                var id = snapshot.id
             }
         } catch (e: Exception) {
             null
@@ -164,6 +166,18 @@ class UserRepository(private val db: FirebaseFirestore, private val auth: Fireba
         }.await()
     }
 
+    suspend fun updateUser(name: String, semester: String, career: String) {
+        val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
 
+        val updates = mapOf(
+            "name" to name,
+            "semester" to semester,
+            "career" to career
+        )
+
+        withContext(Dispatchers.IO) {
+            db.collection("users").document(userId).update(updates).await()
+        }
+    }
 }
 

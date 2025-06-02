@@ -1,5 +1,7 @@
 package com.example.senemarketkotlin
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +17,7 @@ import com.example.senemarketkotlin.repositories.StorageRepository
 import com.example.senemarketkotlin.repositories.UserRepository
 import com.example.senemarketkotlin.ui.navigation.NavigationWrapper
 import com.example.senemarketkotlin.ui.theme.SeneMarketKotlinTheme
+import com.example.senemarketkotlin.utils.PriceDropChecker
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -32,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var storageRepository: StorageRepository
     private lateinit var productRepository: ProductRepository
+    private lateinit var sharedPreferences: SharedPreferences
 
 
 
@@ -42,9 +46,10 @@ class MainActivity : ComponentActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
         userRepository = UserRepository( db = db, auth = auth)
+        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE)
 
         storageRepository = StorageRepository()
-        productRepository = ProductRepository( db = db, auth = auth)
+        productRepository = ProductRepository( db = db, auth = auth, sharedPreferences = sharedPreferences)
 
         val dataLayerFacade = DataLayerFacade(
             userRepository = userRepository,
@@ -66,6 +71,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        PriceDropChecker.appContext = applicationContext
     }
 
     override fun onStart() {

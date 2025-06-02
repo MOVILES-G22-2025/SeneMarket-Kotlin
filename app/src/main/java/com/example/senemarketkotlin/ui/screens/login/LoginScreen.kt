@@ -47,6 +47,8 @@ import com.example.senemarketkotlin.ui.theme.Yellow30
 
 @Composable
 
+//
+
 fun LoginScreen(viewModel: LoginScreenViewModel) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
